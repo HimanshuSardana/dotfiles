@@ -1,0 +1,10 @@
+add_newline = false 
+
+format = "(bold blue) $hostname $directory $battery"
+
+[directory]
+style = "fg:#a6e3a1 bold" 
+
+[hostname]
+style = "bold blue"
+

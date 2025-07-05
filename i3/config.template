@@ -1,0 +1,4 @@
+client.focused          ${color7} ${background} ${foreground} #2e9ef4 ${background}
+client.focused_inactive ${color3} ${background} ${foreground} #2e9ef4 ${background}
+client.unfocused        ${color0} ${background} ${foreground} ${background} ${background}
+client.urgent           ${color1} ${background} ${foreground} ${color1} ${background}

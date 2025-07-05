@@ -1,0 +1,57 @@
+{
+	"position": "top",
+		"modules-left": [ "custom/powermenu", "hyprland/workspaces"],
+		"modules-center": ["hyprland/window"],
+		"modules-right": ["network", "pulseaudio", "battery", "clock"],
+		"custom/powermenu": {
+			"format": "",
+			"interval": "once",
+			/*"exec": "checkupdates | wc -l",*/
+			"on-click": "~/.config/rofi/rofi-scripts/rofi-powermenu/powermenu.sh",
+			"tooltip": false,
+			"signal": 8
+		},
+		"hyprland/window": {
+			"separate-outputs": true
+		},
+		"clock": {
+			"format": "<span foreground='#2d4f67'>  </span>{:%a %d %H:%M}",
+			"tooltip-format": "<big>{:%Y %B}</big>\n<tt><small>{calendar}</small></tt>"
+		},
+		"battery": {
+			"states": {
+				"warning": 30,
+				"critical": 15
+			},
+			"format": "<span size='13000' foreground='#2d4f67'>{icon} </span> {capacity}%",
+			"format-warning": "<span size='13000' foreground='#2d4f67'>{icon} </span> {capacity}%",
+			"format-critical": "<span size='13000' foreground='#2d4f67'>{icon} </span> {capacity}%",
+			"format-charging": "<span size='13000' foreground='#2d4f67'> </span>{capacity}%",
+			"format-plugged": "<span size='13000' foreground='#2d4f67'> </span>{capacity}%",
+			"format-alt": "<span size='13000' foreground='#2d4f67'>{icon} </span> {time}",
+			"format-full": "<span size='13000' foreground='#2d4f67'> </span>{capacity}%",
+			"format-icons": ["", "", "", "", ""],
+			"tooltip-format": "{time}"
+		},
+		"network": {
+			"format-wifi": "<span size='13000' foreground='#2d4f67'>  </span>{essid}",
+			"format-ethernet": "<span size='13000' foreground='#2d4f67'>󰤭  </span> Disconnected",
+			"format-linked": "{ifname} (No IP) ",
+			"format-disconnected": "<span size='13000' foreground='#eba0ac'>  </span>Disconnected",
+			"tooltip-format-wifi": "Signal Strenght: {signalStrength}%"
+		},
+		"pulseaudio": {
+			"on-click": "pactl set-sink-mute @DEFAULT_SINK@ toggle",
+			"format": "<span size='13000' foreground='#2d4f67'>{icon} </span> {volume}%",
+			"format-muted": "<span size='14000' foreground='#2d4567'></span> Muted",
+			"format-icons": {
+				"headphone": "",
+				"hands-free": "",
+				"headset": "",
+				"phone": "",
+				"portable": "",
+				"car": "",
+				"default": ["", ""]
+			}
+		}
+}
