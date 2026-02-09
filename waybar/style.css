@@ -1,0 +1,84 @@
+@import "kanagawa.css";
+
+/* Assuming kanagawa.css defines:
+   @sumiInk0, @sumiInk1 (Dark backgrounds)
+   @fujiWhite (Foreground)
+   @waveBlue1, @crystalBlue (Blues)
+   @oniViolet (Purple/Magenta)
+   @autumnGreen (Green)
+*/
+
+* {
+    font-family: "Iosevka Nerd Font Mono", "Symbols Nerd Font";
+    font-size: 13px;
+    border: none;
+    border-radius: 0;
+}
+
+window#waybar {
+    background: rgba(0, 0, 0, 0);
+    color: @fujiWhite;
+}
+
+/* Base module styling (The "Pill" look) */
+#workspaces,
+#window,
+#clock,
+#network,
+#cpu,
+#memory,
+#pulseaudio,
+#battery,
+#tray {
+    background-color: @sumiInk1;
+    padding: 0 12px;
+    margin: 4px 2px;
+    border-radius: 8px;
+}
+
+/* Left Modules */
+#workspaces {
+    background-color: @sumiInk1;
+}
+
+#workspaces button {
+    padding: 0 5px;
+    color: @sumiInk4;
+}
+
+#workspaces button.active {
+    color: @crystalBlue;
+}
+
+#workspaces button.urgent {
+    color: @oniViolet;
+}
+
+#window {
+    background-color: transparent; /* Makes the title float without a box */
+    color: @waveBlue1;
+    font-weight: bold;
+}
+
+/* Center Modules */
+#clock {
+    color: @fujiWhite;
+    font-weight: bold;
+}
+
+/* Right Modules */
+#cpu { color: @autumnGreen; }
+#memory { color: @oniViolet; }
+#pulseaudio { color: @crystalBlue; }
+#battery { color: @autumnGreen; }
+#battery.warning { color: @roninYellow; }
+#battery.critical { color: @samuraiRed; }
+
+#network {
+    color: @waveBlue1;
+    padding-right: 15px;
+}
+
+#tray {
+    margin-right: 8px;
+}
