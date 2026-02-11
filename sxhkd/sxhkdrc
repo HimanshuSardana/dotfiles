@@ -79,7 +79,14 @@ XF86AudioRaiseVolume
 	$HOME/dotfiles/scripts/volume_up.sh
 
 XF86AudioLowerVolume
-	$HOME/dotfiles/scripts/volume_upasb_file.pdf'
+	$HOME/dotfiles/scripts/volume_down.sh
 
 XF86AudioMute
 	$HOME/dotfiles/scripts/volume_mute.sh
+
+super + w
+	$HOME/dotfiles/scripts/wallpaper.sh
+
+super + m
+	$HOME/dotfiles/scripts/spotify.sh
+
