@@ -1,0 +1,85 @@
+super + Return
+    kitty
+
+super + a
+    rofi -show drun
+
+super + b
+    zen-browser
+
+super + Escape
+    pkill -USR1 -x sxhkd
+
+# Quit / restart bspwm
+super + shift + {q,r}
+    bspc {quit,wm -r}
+
+# Close window
+super + q
+    bspc node -c
+
+# Focus windows
+super + j
+    bspc node -f next.local
+
+super + k
+    bspc node -f prev.local
+
+
+# Move windows
+super + shift + {h,j,k,l}
+    bspc node -s {west,south,north,east}
+
+# Switch desktops
+super + {1-9,0}
+    bspc desktop -f ^{1-9,10}
+
+# Move window to desktop
+super + shift + {1-9,0}
+    bspc node -d ^{1-9,10}
+
+super + f
+    bspc query -N -n focused.fullscreen && bspc node -t tiled || bspc node -t fullscreen
+
+super + shift + space
+    bspc node -t floating
+
+# Resize windows
+super + ctrl + {h,l}
+    bspc node -z {left -20 0,right 20 0}
+
+
+# Increase gaps
+super + equal
+    bspc config window_gap $(( $(bspc config window_gap) + 20 ))
+
+# Decrease gaps
+super + minus
+    bspc config window_gap $(( $(bspc config window_gap) - 20 ))
+
+# Reset gaps
+super + shift + 0
+    bspc config window_gap 10
+
+
+super + s
+    sh $HOME/dotfiles/scripts/screenshot.sh
+
+super + BackSpace
+    sh $HOME/dotfiles/scripts/powermenu.sh
+
+XF86MonBrightnessUp
+    brightnessctl s 1000+ && brightnessctl -m | awk -F, '{print $4}' | tr -d '%' | xargs -I{} dunstify -a "brightness" -u low -h int:value:{} -h string:x-dunst-stack-tag:brightness "Brightness: {}%"
+
+XF86MonBrightnessDown
+    brightnessctl s 1000- && brightnessctl -m | awk -F, '{print $4}' | tr -d '%' | xargs -I{} dunstify -a "brightness" -u low -h int:value:{} -h string:x-dunst-stack-tag:brightness "Brightness: {}%"
+
+# Volume
+XF86AudioRaiseVolume
+	$HOME/dotfiles/scripts/volume_up.sh
+
+XF86AudioLowerVolume
+	$HOME/dotfiles/scripts/volume_upasb_file.pdf'
+
+XF86AudioMute
+	$HOME/dotfiles/scripts/volume_mute.sh

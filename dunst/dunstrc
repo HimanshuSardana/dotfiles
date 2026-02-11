@@ -1,0 +1,33 @@
+# === Dunst Everforest Theme with Green Progress Bars ===
+
+[global]
+    geometry = "300x5-10+10"
+    font = Monospace 10
+    transparency = 0
+    frame_width = 1
+    separator_height = 1
+    shrink = yes
+    sort = yes
+    show_age_threshold = 10
+
+[urgency_low]
+    background = "#3D484D"   # bg2
+    foreground = "#D3C6AA"   # fg
+    frame_color = "#2D353B"  # bg
+    progress = "#A7C080"     # green
+    timeout = 5
+
+[urgency_normal]
+    background = "#343F44"   # bg1
+    foreground = "#D3C6AA"   # fg
+    frame_color = "#2D353B"  # bg
+    progress = "#A7C080"     # green
+    timeout = 10
+
+[urgency_critical]
+    background = "#2D353B"   # bg
+    foreground = "#E67E80"   # red
+    frame_color = "#E67E80"  # red
+    progress = "#A7C080"     # green
+    timeout = 0
+    format = "**%s**"

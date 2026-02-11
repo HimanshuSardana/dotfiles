@@ -1,0 +1,55 @@
+# === Everforest Dark (medium) ===
+# Palette reference:
+# bg        #2D353B
+# bg1       #343F44
+# bg2       #3D484D
+# fg        #D3C6AA
+# red       #E67E80
+# yellow    #DBBC7F
+# green     #A7C080
+# blue      #7FBBB3
+# orange    #E69875
+# gray      #859289
+
+set notification-error-bg       "rgba(45,53,59,1)"     # bg
+set notification-error-fg       "rgba(230,126,128,1)"  # red
+set notification-warning-bg     "rgba(45,53,59,1)"     # bg
+set notification-warning-fg     "rgba(219,188,127,1)"  # yellow
+set notification-bg             "rgba(45,53,59,1)"     # bg
+set notification-fg             "rgba(167,192,128,1)"  # green
+
+set completion-bg               "rgba(61,72,77,1)"     # bg2
+set completion-fg               "rgba(211,198,170,1)"  # fg
+set completion-group-bg         "rgba(52,63,68,1)"     # bg1
+set completion-group-fg         "rgba(133,146,137,1)"  # gray
+set completion-highlight-bg     "rgba(127,187,179,1)"  # blue
+set completion-highlight-fg     "rgba(45,53,59,1)"     # bg
+
+# Define the color in index mode
+set index-bg                    "rgba(61,72,77,1)"     # bg2
+set index-fg                    "rgba(211,198,170,1)"  # fg
+set index-active-bg             "rgba(127,187,179,1)"  # blue
+set index-active-fg             "rgba(45,53,59,1)"     # bg
+
+set inputbar-bg                 "rgba(45,53,59,1)"     # bg
+set inputbar-fg                 "rgba(211,198,170,1)"  # fg
+
+set statusbar-bg                "rgba(61,72,77,1)"     # bg2
+set statusbar-fg                "rgba(211,198,170,1)"  # fg
+
+set highlight-color             "rgba(219,188,127,0.5)" # yellow
+set highlight-active-color      "rgba(230,152,117,0.5)" # orange
+
+set default-bg                  "rgba(45,53,59,1)"     # bg
+set default-fg                  "rgba(211,198,170,1)"  # fg
+set render-loading              true
+set render-loading-bg           "rgba(45,53,59,1)"     # bg
+set render-loading-fg           "rgba(211,198,170,1)"  # fg
+
+# Recolor book content's color
+set recolor-lightcolor          "rgba(45,53,59,1)"     # bg
+set recolor-darkcolor           "rgba(211,198,170,1)"  # fg
+set recolor                     "true"
+set recolor-keephue             "true"
+
+map <Ctrl-r> set recolor !recolor
