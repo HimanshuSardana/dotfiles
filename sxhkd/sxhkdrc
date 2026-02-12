@@ -41,8 +41,8 @@ super + shift + {1-9,0}
 super + f
     bspc query -N -n focused.fullscreen && bspc node -t tiled || bspc node -t fullscreen
 
-super + shift + space
-    bspc node -t floating
+super + space
+    bspc query -N -n focused.floating && bspc node -t tiled || bspc node -t floating
 
 # Resize windows
 super + ctrl + {h,l}

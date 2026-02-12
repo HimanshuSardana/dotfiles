@@ -27,8 +27,8 @@ return {
 			require("lspconfig").gopls.setup({ capabilities = capabilities })
 			require("lspconfig").tinymist.setup({ capabilities = capabilities, formatterMode = "typstyle" })
 			require("lspconfig").matlab_ls.setup({ capabilities = capabilities })
-			-- require("lspconfig").bash_language_server.setup({ capabilities = capabilities })
-			-- require("lspconfig").beautysh.setup({ capabilities = capabilities })
+			require("lspconfig").bash_language_server.setup({ capabilities = capabilities })
+			require("lspconfig").beautysh.setup({ capabilities = capabilities })
 			require("lspconfig").tsserver.setup({
 				capabilities = capabilities,
 				init_options = {

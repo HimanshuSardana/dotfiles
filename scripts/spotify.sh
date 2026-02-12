@@ -14,9 +14,9 @@ fi
 OPTIONS="▶ Play/Pause
 ⏭ Next
 ⏮ Previous
-🔁 Shuffle
-🔂 Loop
-🎵 Now Playing: $CURRENT"
+  Shuffle
+󰑖  Loop
+󰎇  Now Playing: $CURRENT"
 
 # Show rofi menu
 CHOICE=$(echo -e "$OPTIONS" | rofi -dmenu -p "Spotify")

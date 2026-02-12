@@ -124,3 +124,6 @@ function ghd() {
   local reponame="${PWD##*/}"
   gh repo delete "$reponame" --confirm
 }
+bindkey -s "^[s" "sudo "
+bindkey -s "^g" "fgit^M"
+

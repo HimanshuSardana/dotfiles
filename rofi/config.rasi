@@ -64,7 +64,7 @@ configuration {
 //
 listview {
   background-color: @bg;
-  columns: 2;
+  columns: 1;
   lines: 10;
 }
 //
