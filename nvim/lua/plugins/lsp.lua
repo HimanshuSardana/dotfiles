@@ -20,43 +20,62 @@ return {
 		},
 		config = function()
 			local capabilities = require("blink.cmp").get_lsp_capabilities()
-			require("lspconfig").lua_ls.setup({ capabilities = capabilities })
-			require("lspconfig").r_language_server.setup({ capabilities = capabilities })
-			require("lspconfig").basedpyright.setup({ capabilities = capabilities })
-			require("lspconfig").ruff.setup({ capabilities = capabilities })
-			require("lspconfig").gopls.setup({ capabilities = capabilities })
-			require("lspconfig").tinymist.setup({ capabilities = capabilities, formatterMode = "typstyle" })
-			require("lspconfig").matlab_ls.setup({ capabilities = capabilities })
-			require("lspconfig").bash_language_server.setup({ capabilities = capabilities })
-			require("lspconfig").beautysh.setup({ capabilities = capabilities })
-			require("lspconfig").tsserver.setup({
-				capabilities = capabilities,
-				init_options = {
-					preferences = { importModuleSpecifierPreference = "non-relative", quotePreference = "single" },
-				},
-			})
-			require("lspconfig").clangd.setup({
-				capabilities = capabilities,
-				filetypes = { "c", "cpp", "objc", "objcpp" },
-				cmd = { "clangd", "--background-index", "--clang-tidy", "--header-insertion=never" },
-			})
-			require("lspconfig").marksman.setup({ capabilities = capabilities, filetypes = { "markdown" } })
-			require("lspconfig").emmet_ls.setup({
-				capabilities = capabilities,
-				filetypes = {
-					"html",
-					"css",
-					"javascript",
-					"typescript",
-					"javascriptreact",
-					"typescriptreact",
-					"svelte",
-					"vue",
-					"astro",
-				},
-			})
-			require("lspconfig").prismals.setup({ capabilities = capabilities, filetypes = { "prisma" } })
 
+			local servers = {
+				{ name = "lua_ls",               config = {} },
+				{ name = "r_language_server",    config = { capabilities = capabilities } },
+				{ name = "basedpyright",         config = { capabilities = capabilities } },
+				{ name = "ruff",                 config = { capabilities = capabilities } },
+				{ name = "gopls",                config = { capabilities = capabilities } },
+				{ name = "tinymist",             config = { capabilities = capabilities, formatterMode = "typstyle" } },
+				{ name = "matlab_ls",            config = { capabilities = capabilities } },
+				{ name = "bash_language_server", config = { capabilities = capabilities } },
+				{ name = "bash_ls",              config = { capabilities = capabilities } },
+				{
+					name = "tsserver",
+					config = {
+						capabilities = capabilities,
+						init_options = {
+							preferences = {
+								importModuleSpecifierPreference = "non-relative",
+								quotePreference = "single",
+							},
+						},
+					},
+				},
+				{
+					name = "clangd",
+					config = {
+						capabilities = capabilities,
+						filetypes = { "c", "cpp", "objc", "objcpp" },
+						cmd = { "clangd", "--background-index", "--clang-tidy", "--header-insertion=never" },
+					},
+				},
+				{ name = "marksman", config = { capabilities = capabilities, filetypes = { "markdown" } } },
+				{
+					name = "emmet_ls",
+					config = {
+						capabilities = capabilities,
+						filetypes = {
+							"html",
+							"css",
+							"javascript",
+							"typescript",
+							"javascriptreact",
+							"typescriptreact",
+							"svelte",
+							"vue",
+							"astro",
+						},
+					},
+				},
+				{ name = "prismals", config = { capabilities = capabilities, filetypes = { "prisma" } } },
+			}
+
+			for _, server in ipairs(servers) do
+				vim.lsp.config(server.name, server.config)
+				vim.lsp.enable(server.name)
+			end
 			vim.diagnostic.config({
 				virtual_text = true,
 				signs = true,

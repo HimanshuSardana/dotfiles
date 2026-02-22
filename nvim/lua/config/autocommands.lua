@@ -25,3 +25,19 @@ vim.api.nvim_create_autocmd('LspAttach', {
 		end
 	end,
 })
+
+
+vim.api.nvim_create_user_command("LspInfo", function()
+	local clients = vim.lsp.get_clients({ bufnr = 0 })
+	if #clients == 0 then
+		print("No active LSP clients attached to this buffer.")
+		return
+	end
+
+	local client_names = {}
+	for _, client in ipairs(clients) do
+		table.insert(client_names, client.name .. " (id: " .. client.id .. ")")
+	end
+	print("Active clients: " .. table.concat(client_names, ", "))
+end, {})
+
