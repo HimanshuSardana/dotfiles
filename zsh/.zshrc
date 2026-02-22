@@ -75,13 +75,11 @@ function tsess() {
   local filename="${file%.typ}"
   
   if [[ -n "$TMUX" ]]; then
-    # Split window into 3 panes
-    tmux split-window -h "nvim '$file'"
     tmux split-window -v "typst watch '$file'"
+    tmux split-window -h "zathura '$file'"
     tmux select-pane -t 0
-    tmux send-keys "zathura '${filename}.pdf'" C-m
+    tmux send-keys "nvim '${filename}.pdf'" C-m
   else
-    # Start a new tmux session
     tmux new-session -d -s tsess "nvim '$file'"
     tmux split-window -h "typst watch '$file'"
     tmux split-window -v "zathura '${filename}.pdf'"
@@ -125,5 +123,13 @@ function ghd() {
   gh repo delete "$reponame" --confirm
 }
 bindkey -s "^[s" "sudo "
+bindkey -s "^[o" "xdg-open "
 bindkey -s "^g" "fgit^M"
 
+alias glo="git log --oneline"
+
+export CEREBRAS_API_KEY="csk-85fv2ekx4856xnp38jt82eeeyrcjwhw2n9pmd9nnkv4ftpej"
+export ANDROID_HOME="$HOME/Android/Sdk/"
+export ANDROID_SDK_ROOT="$HOME/Android/Sdk/"
+export PATH=$PATH:$ANDROID_HOME/tools:$ANDROID_HOME/platform-tools
+alias vim="nvim"

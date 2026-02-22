@@ -65,6 +65,10 @@ super + shift + 0
 super + s
     sh $HOME/dotfiles/scripts/screenshot.sh
 
+super + shift + s
+    sh $HOME/dotfiles/scripts/screenrecorder.sh
+
+
 super + BackSpace
     sh $HOME/dotfiles/scripts/powermenu.sh
 
@@ -90,3 +94,14 @@ super + w
 super + m
 	$HOME/dotfiles/scripts/spotify.sh
 
+super + o
+	$HOME/dotfiles/scripts/ocr.sh
+
+alt + c
+	$HOME/personal/projects/coursera-link-copier/run.sh
+
+alt + t
+	$HOME/dotfiles/scripts/todos.sh
+
+alt + b
+	$HOME/dotfiles/scripts/bookmarks.sh
