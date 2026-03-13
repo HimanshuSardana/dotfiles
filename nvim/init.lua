@@ -16,7 +16,11 @@ vim.opt.showmode = false
 vim.opt.swapfile = false
 vim.opt.undodir = vim.fn.stdpath("cache") .. "/undodir"
 vim.opt.undofile = true
-vim.o.winborder = "none"
+vim.o.winborder = "rounded"
+vim.o.scrolloff = 8
+vim.o.smartcase = true
+vim.o.incsearch = true
+vim.o.ignorecase = true
 
 vim.g.python3_host_prog = "/usr/bin/python3"
 
