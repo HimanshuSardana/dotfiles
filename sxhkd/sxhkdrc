@@ -20,10 +20,10 @@ super + q
 
 # Focus windows
 super + j
-    bspc node -f next.local
+    bspc node -f next.local.leaf
 
 super + k
-    bspc node -f prev.local
+    bspc node -f prev.local.leaf
 
 
 # Move windows
@@ -45,7 +45,7 @@ super + space
     bspc query -N -n focused.floating && bspc node -t tiled || bspc node -t floating
 
 # Resize windows
-super + ctrl + {h,l}
+super + {h,l}
     bspc node -z {left -20 0,right 20 0}
 
 
@@ -105,3 +105,11 @@ alt + t
 
 alt + b
 	$HOME/dotfiles/scripts/bookmarks.sh
+alt + w
+	kitty nmtui
+
+alt + q
+	notify-send "$(cd "$HOME/personal/projects/tiet-quizzes" && uv run main.py)"
+
+super + shift + b
+	$HOME/dotfiles/scripts/bluetooth.sh

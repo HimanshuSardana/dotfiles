@@ -1,10 +1,8 @@
-# === Dunst Everforest Theme with Green Progress Bars ===
-
 [global]
-    geometry = "300x5-10+10"
+    geometry = "30x2-1+1"
     font = Monospace 10
     transparency = 0
-    frame_width = 1
+    frame_width = 0
     separator_height = 1
     shrink = yes
     sort = yes

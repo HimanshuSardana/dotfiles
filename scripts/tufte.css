@@ -1,0 +1,223 @@
+:root {
+  --main-font:
+    "ET Book", "Palatino Linotype", "Palatino", "Times New Roman",
+    "Source Serif Pro", serif;
+
+  --alt-font: "Helvetica Neue", Helvetica, Arial, sans-serif;
+
+  --code-font: "SF Mono", "Menlo", Consolas, monospace;
+
+  --text-color: #111;
+  --bg-color: #ffffff;
+  --accent-color: #222;
+
+  --max-width: 42rem; /* optimal reading width */
+}
+
+/* Reset */
+* {
+  box-sizing: border-box;
+}
+
+html {
+  font-size: 15px; /* better mobile baseline */
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  font-family: var(--main-font);
+  color: var(--text-color);
+  background: var(--bg-color);
+  line-height: 1.7;
+  text-rendering: optimizeLegibility;
+}
+
+/* Container */
+.article__content {
+  max-width: var(--max-width);
+  margin: 0 auto;
+  padding: 1.25rem;
+}
+
+/* Headings */
+h1,
+h2,
+h3,
+h4 {
+  font-family: var(--alt-font);
+  font-weight: 600;
+  line-height: 1.3;
+  margin-top: 2rem;
+  margin-bottom: 0.6rem;
+}
+
+h1 {
+  font-size: 1.9rem;
+  letter-spacing: -0.01em;
+}
+
+h2 {
+  font-size: 1.4rem;
+}
+
+h3 {
+  font-size: 1.15rem;
+}
+
+h4 {
+  font-size: 1rem;
+}
+
+/* Paragraphs */
+p {
+  margin: 0 0 1rem 0;
+  text-align: justify;
+}
+
+p + p {
+  text-indent: 1.4em; /* academic style */
+  margin-top: 0;
+}
+
+/* Links */
+a {
+  color: var(--accent-color);
+  text-decoration: none;
+  border-bottom: 1px solid #bbb;
+}
+
+a:hover {
+  border-bottom-color: #000;
+}
+
+/* Hide long URLs on small screens */
+a::after {
+  content: "";
+}
+
+/* Blockquotes */
+blockquote {
+  margin: 1.5rem 0;
+  padding-left: 1rem;
+  border-left: 3px solid #ddd;
+  font-style: italic;
+  color: #444;
+}
+
+/* Code */
+code,
+pre {
+  font-family: var(--code-font);
+  font-size: 0.85em;
+  background: #f4f4f4;
+  border-radius: 4px;
+}
+
+code {
+  padding: 0.2em 0.4em;
+}
+
+pre {
+  padding: 1rem;
+  overflow-x: auto;
+  margin: 1.5rem 0;
+}
+
+/* Images */
+img {
+  max-width: 100%;
+  height: auto;
+  margin: 1.5rem auto;
+  display: block;
+}
+
+figure {
+  margin: 2rem 0;
+}
+
+figcaption {
+  font-size: 0.8rem;
+  color: #666;
+  text-align: center;
+  margin-top: 0.4rem;
+  font-style: italic;
+}
+
+/* Lists */
+ul,
+ol {
+  padding-left: 1.5rem;
+  margin: 1rem 0;
+}
+
+li {
+  margin-bottom: 0.4rem;
+}
+
+/* Tables (mobile-friendly) */
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 1.5rem 0;
+  font-size: 0.9rem;
+  display: block;
+  overflow-x: auto;
+}
+
+th,
+td {
+  padding: 0.6rem;
+  border-bottom: 1px solid #ddd;
+  text-align: left;
+}
+
+th {
+  font-family: var(--alt-font);
+  border-bottom: 2px solid #333;
+}
+
+/* Divider */
+hr {
+  border: none;
+  border-top: 1px solid #ddd;
+  margin: 2rem 0;
+}
+
+/* Print (Percollate / PDF focus) */
+@media print {
+  html {
+    font-size: 11pt;
+  }
+
+  body {
+    background: white;
+  }
+
+  .article__content {
+    max-width: 100%;
+    padding: 0;
+  }
+
+  a::after {
+    content: " (" attr(href) ")";
+    font-size: 0.7em;
+    color: #666;
+  }
+
+  pre,
+  img {
+    page-break-inside: avoid;
+  }
+}
+
+/* A5 layout */
+@page {
+  size: A5;
+  margin: 1cm;
+}
+
+@page :first {
+  margin-top: 1.2cm;
+}

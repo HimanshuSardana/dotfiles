@@ -6,7 +6,10 @@ options="  Power Off
   Reboot
   Suspend
   Logout
-  Lock"
+  Lock
+󰽥  Night Mode
+󰖨  Day Mode
+"
 
 chosen=$(echo -e "$options" | rofi -dmenu -i -p "Power" -theme-str '
 window { width: 300px; }
@@ -25,5 +28,11 @@ case "$chosen" in
     "  Lock")
 	    slock
         ;;
+    "󰽥  Night Mode")
+	redshift -x && redshift -O 3500K
+	;;
+    "󰖨  Day Mode")
+	redshift -x
+	;;
 esac
 
