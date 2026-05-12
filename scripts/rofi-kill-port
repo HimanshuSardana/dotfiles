@@ -1,0 +1,59 @@
+#!/bin/bash
+# Lists running ports in rofi and kills the selected port
+
+# Get all listening ports with PID and process name
+ports=$(ss -tulpn 2>/dev/null | grep -v "^State" | awk '{
+    # Extract port from Local Address:Port (last field after last colon)
+    split($5, addr, ":");
+    port = addr[length(addr)];
+    
+    # Extract process info from last field
+    proc_info = $NF;
+    
+    # Extract PID from "pid=XXXX"
+    pid = "N/A";
+    if (match(proc_info, /pid=([0-9]+)/, m)) {
+        pid = m[1];
+    }
+    
+    # Extract process name from "(name,..." or "(\"name\","
+    proc_name = "?";
+    if (match(proc_info, /\(("[^"]+)"/, n)) {
+        proc_name = n[1];
+    }
+    
+    # Only show entries with valid port and PID
+    if (port != "" && pid != "N/A") {
+        printf "%s\t%s\t%s\n", port, pid, proc_name;
+    }
+}' | sort -t$'\t' -k1 -n | awk -F'\t' '{printf "%-6s %-6s %s\n", $1, $2, $3}')
+
+if [ -z "$ports" ]; then
+    echo "No listening ports with PIDs found"
+    exit 1
+fi
+
+# Show in rofi and get selection
+selected=$(echo "$ports" | rofi -dmenu -i -p "Select port to kill:" -kb-custom-1 "Alt+k" -mesg "Press Alt+k to kill selected port" -lines 15)
+
+if [ -z "$selected" ]; then
+    exit 0
+fi
+
+# Extract PID from selection
+pid=$(echo "$selected" | awk '{print $2}')
+
+if [ "$pid" = "N/A" ] || [ -z "$pid" ]; then
+    echo "Cannot kill: PID not available"
+    exit 1
+fi
+
+# Confirm and kill
+proc_name=$(echo "$selected" | awk '{print $3}')
+port_num=$(echo "$selected" | awk '{print $1}')
+
+confirm=$(echo -e "Yes\nNo" | rofi -dmenu -i -p "Kill port $port_num ($proc_name, PID $pid)?" -lines 2)
+
+if [ "$confirm" = "Yes" ]; then
+    kill -9 "$pid" 2>/dev/null && echo "Killed PID $pid ($proc_name on port $port_num)" || echo "Failed to kill PID $pid"
+fi
