@@ -5,64 +5,24 @@ vim.opt.cursorline = true
 vim.opt.path:append("**")
 vim.opt.clipboard = "unnamedplus"
 vim.opt.winborder = "bold"
-vim.opt.completeopt = { "menu", "menuone", "noselect", "popup", "fuzzy" }
+vim.opt.ignorecase = true
+vim.opt.smartcase = true
+
+require('vim._core.ui2').enable()
 
 vim.g.mapleader = " "
 vim.cmd.colorscheme("catppuccin")
-
-local files = vim.tbl_map(function(f)
-	return vim.fn.fnamemodify(f, ":.")
-end, vim.fn.globpath(vim.o.path, "*", true, true))
-
-_G.FindFileComplete = function(_, cmdline)
-	return vim.fn.matchfuzzy(files, cmdline)
-end
-
-local findFile = function()
-	vim.ui.input({
-		prompt = "files> ",
-		completion = "customlist,v:lua.FindFileComplete",
-	}, function(input)
-		local match = input and vim.fn.matchfuzzy(files, input)[1]
-
-		if match then
-			vim.cmd.edit(match)
-		end
-	end)
-end
-
-local findBuffer = function()
-	vim.ui.input({
-		prompt = "Buffer: ",
-		completion = "buffer",
-	}, function(input)
-		if input and input ~= "" then
-			vim.cmd("buffer " .. input)
-		end
-	end)
-end
-
-local liveGrep = function()
-	local query = vim.fn.input("Grep> ")
-
-	if query == "" then
-		return
-	end
-
-	vim.cmd("cexpr system('rg --vimgrep " .. query .. "')")
-	vim.cmd("copen")
-end
 
 vim.pack.add({
 	"https://github.com/echasnovski/mini.ai",
 	"https://github.com/echasnovski/mini.pairs",
 	"https://github.com/williamboman/mason.nvim",
-	"https://github.com/williamboman/mason-lspconfig.nvim",
 	"https://github.com/neovim/nvim-lspconfig",
 	"https://github.com/stevearc/oil.nvim",
 	"https://github.com/nvim-treesitter/nvim-treesitter",
 	"https://github.com/tpope/vim-fugitive",
-	"https://github.com/nvim-treesitter/nvim-treesitter",
+	"https://github.com/ibhagwan/fzf-lua",
+	"https://github.com/Saghen/blink.cmp",
 })
 
 require("mason").setup()
@@ -70,14 +30,16 @@ require("oil").setup()
 require("mini.ai").setup()
 require("mini.pairs").setup()
 
-require("mason-lspconfig").setup({
-	ensure_installed = {
-		"lua_ls",
-		"pyright",
-		"ts_ls",
-		"clangd",
-		"rust_analyzer",
-		"tinymist",
+require("fzf-lua").setup({ "ivy" })
+
+require("blink.cmp").setup({
+	keymap = { preset = "default" },
+	appearance = {
+		use_nvim_cmp_as_default = true,
+		nerd_font_variant = "mono",
+	},
+	sources = {
+		default = { "lsp", "path", "snippets", "buffer" },
 	},
 })
 
@@ -105,7 +67,7 @@ require("nvim-treesitter").setup({
 	},
 })
 
-vim.lsp.enable({ "basedpyright", "gopls", "lua_ls" })
+vim.lsp.enable({ "basedpyright", "gopls", "lua_ls", "ts_ls" })
 
 vim.api.nvim_create_autocmd("TextYankPost", {
 	callback = function()
@@ -115,9 +77,9 @@ vim.api.nvim_create_autocmd("TextYankPost", {
 
 vim.keymap.set("n", "<Esc>", ":nohl<CR>")
 vim.keymap.set("n", "<leader>q", ":bd<CR>")
-vim.keymap.set("n", "<leader>fg", liveGrep)
-vim.keymap.set("n", "<leader>ff", findFile)
-vim.keymap.set("n", "<leader><leader>", findBuffer)
+vim.keymap.set("n", "<leader>fg", ":FzfLua live_grep<CR>")
+vim.keymap.set("n", "<leader>ff", function() require("fzf-lua").files() end)
+vim.keymap.set("n", "<leader><leader>", function() require("fzf-lua").buffers() end)
 vim.keymap.set("n", "<leader>ft", ":Oil<CR>")
 vim.keymap.set("v", "K", ":m '<-2<CR>gv=gv")
 vim.keymap.set("v", "J", ":m '>+1<CR>gv=gv")
@@ -188,3 +150,28 @@ vim.keymap.set("n", "<leader>z", function()
 		require("oil").open(matches[1])
 	end)
 end)
+
+vim.keymap.set("n", "<leader>Z", function()
+	vim.ui.input({
+		prompt = "Zoxide cd> ",
+	}, function(input)
+		if not input or input == "" then
+			return
+		end
+
+		local dir = vim.fn.system(
+			"zoxide query " .. vim.fn.shellescape(input)
+		):gsub("\n", "")
+
+		if dir == "" then
+			print("No match")
+			return
+		end
+
+		vim.cmd.cd(vim.fn.fnameescape(dir))
+
+		require("oil").open(dir)
+	end)
+end)
+
+require("ai_chat").setup()
