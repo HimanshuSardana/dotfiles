@@ -8,6 +8,8 @@ vim.opt.winborder = "bold"
 vim.opt.ignorecase = true
 vim.opt.smartcase = true
 
+vim.opt.undodir = vim.fn.stdpath("data") .. "/undo"
+vim.opt.undofile = true
 require('vim._core.ui2').enable()
 
 vim.g.mapleader = " "
