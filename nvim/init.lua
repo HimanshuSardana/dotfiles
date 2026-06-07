@@ -25,6 +25,12 @@ vim.pack.add({
 	"https://github.com/tpope/vim-fugitive",
 	"https://github.com/ibhagwan/fzf-lua",
 	"https://github.com/Saghen/blink.cmp",
+	"https://github.com/brenoprata10/nvim-highlight-colors",
+	"https://github.com/HakonHarnes/img-clip.nvim",
+	"https://github.com/lervag/vimtex",
+	"https://github.com/cachebag/jumpy.nvim",
+	"https://github.com/fxn/vim-monochrome",
+	"https://github.com/stevearc/quicker.nvim",
 })
 
 require("mason").setup()
@@ -33,6 +39,9 @@ require("mini.ai").setup()
 require("mini.pairs").setup()
 
 require("fzf-lua").setup({ "ivy" })
+require("nvim-highlight-colors").setup()
+require("img-clip").setup()
+require("quicker").setup()
 
 require("blink.cmp").setup({
 	keymap = { preset = "default" },
