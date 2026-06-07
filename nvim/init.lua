@@ -43,6 +43,14 @@ require("nvim-highlight-colors").setup()
 require("img-clip").setup()
 require("quicker").setup()
 
+require("fzf-lua").setup({
+	"borderless-full",
+	keymap = {
+		fzf = {
+			["ctrl-q"] = "select-all+accept",
+		},
+	},
+})
 require("blink.cmp").setup({
 	keymap = { preset = "default" },
 	appearance = {
