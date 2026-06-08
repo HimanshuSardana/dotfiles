@@ -201,8 +201,36 @@ vim.pack.add({
 	"https://github.com/cachebag/jumpy.nvim",
 	"https://github.com/fxn/vim-monochrome",
 	"https://github.com/stevearc/quicker.nvim",
+	"https://github.com/michaelb/sniprun"
 })
 
+require("sniprun").setup({
+	binary_path = "/usr/sbin/sniprun",
+	-- Language-specific interpreters
+	selected_interpreters = {
+		'Python3_fifo',  -- Python with FIFO-based REPL (no klepto dependency)
+		'Go_original',   -- Go
+		'C_original',    -- C
+		'Cpp_original',  -- C++
+		'Lua_nvim',      -- Lua (with Neovim integration)
+	},
+	-- Enable REPL mode for languages that support it
+	repl_enable = { 'Python3_fifo', 'Lua_nvim' },
+	-- Display output in a split terminal (shows code history too)
+	display = { "TerminalWithCode" },
+	display_options = {
+		terminal_scrollback = vim.o.scrollback,
+		terminal_line_number = false,
+		terminal_signcolumn = false,
+		terminal_position = "vertical",
+		terminal_width = 45,
+	},
+})
+
+vim.api.nvim_set_keymap('v', '<leader>r', '<Plug>SnipRun', { silent = true })
+-- Additional sniprun mappings for REPL and terminal control
+vim.api.nvim_set_keymap('n', '<leader>rr', ':SnipReplMemoryClean<CR>', { silent = true, desc = 'Clear REPL memory' })
+vim.api.nvim_set_keymap('n', '<leader>rt', ':SnipClose<CR>', { silent = true, desc = 'Close sniprun terminal' })
 require("mason").setup()
 require("oil").setup()
 require("mini.ai").setup()
