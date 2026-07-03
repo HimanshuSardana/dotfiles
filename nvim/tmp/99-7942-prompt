@@ -1,0 +1,34 @@
+<Context>
+You receive a selection in neovim that you need to replace with new code.
+The selection's contents may contain notes, incorporate the notes every time if there are some.
+consider the context of the selection and what you are suppose to be implementing
+<SELECTION_LOCATION>
+range(point(1,1),point(1,15))
+</SELECTION_LOCATION>
+<SELECTION_CONTENT>
+def add(x, y):
+</SELECTION_CONTENT>
+<SURROUNDING_CONTEXT>
+def add(x, y):
+    return x + y
+</SURROUNDING_CONTEXT>
+
+</Context>
+<Prompt>
+add docstrins
+</Prompt>
+
+<Location><File>/home/himanshu/dotfiles/nvim/tst.py</File><Function>range(point(1,1),point(1,15))</Function></Location>
+<FunctionText>def add(x, y):</FunctionText>
+<TEMP_FILE>./tmp/99-7942</TEMP_FILE>
+<MustObey>
+NEVER alter any file other than TEMP_FILE.
+never provide the requested changes as conversational output. Return only the code.
+ONLY provide requested changes by writing the change to TEMP_FILE
+
+never attempt to read TEMP_FILE.
+It is purely for output.
+Previous contents, which may not exist, can be written over without worry
+After writing TEMP_FILE once you should be done.  Be done and end the session.
+
+</MustObey>

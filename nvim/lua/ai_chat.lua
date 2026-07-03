@@ -3,7 +3,7 @@ local M = {}
 M.config = {
 	url = "https://opencode.ai/zen/go/v1/chat/completions",
 	api_key = os.getenv("OPENCODE_API_KEY"),
-	model = "minimax-m2.5",
+	model = "minimax-m2.7",
 }
 
 M.messages = {}
@@ -104,7 +104,7 @@ function M.send()
 	local payload = vim.json.encode({
 		model = M.config.model,
 		messages = M.messages,
-		max_tokens = 512,
+		-- max_tokens = 512,
 		temperature = 0.7,
 	})
 

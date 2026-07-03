@@ -98,7 +98,7 @@ super + o
 	$HOME/dotfiles/scripts/ocr.sh
 
 alt + c
-	$HOME/personal/projects/coursera-link-copier/run.sh
+	$HOME/dotfiles/scripts/common_clipboard.sh
 
 alt + t
 	$HOME/dotfiles/scripts/todos.sh
@@ -113,3 +113,10 @@ alt + q
 
 super + shift + b
 	$HOME/dotfiles/scripts/bluetooth.sh
+
+alt+ k
+	/home/himanshu/dotfiles/scripts/rofi-kill-port
+
+alt + y
+	/home/himanshu/dotfiles/scripts/yts.sh
+	

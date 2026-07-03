@@ -1,0 +1,2 @@
+fixit dev mongo uri,mongodb://devAdmin:m0ng0P%40%24%24w0rd%5E%5E1@dev-db.fixit.internal:27017/fixit_whatsapp_agent_dev?tls=true&tlsAllowInvalidHostnames=true&authSource=admin&replicaSet=rs0&tlsAllowInvalidCertificates=true
+fixit staging mongo uri,mongodb://fixitStaging:657629a264c0b3b925eb954f23422e0d537fb51c8c0f934196239634cda676fa@staging-db.fixit.internal:27017/fixit_whatsapp_agent_staging?tls=true&tlsAllowInvalidHostnames=true&tlsAllowInvalidCertificates=true&authSource=fixit_whatsapp_agent_staging&replicaSet=rs0

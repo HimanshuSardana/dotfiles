@@ -1,0 +1,16 @@
+#!/usr/bin/env bash
+# npt - Setup tmux with nvim, pi, terminal
+
+tmux split-window -v -p 30
+
+tmux select-pane -t .1
+
+tmux split-window -h -p 25
+
+tmux select-pane -t .2
+
+tmux select-pane -t :.1
+tmux send-keys "nvim" C-m
+
+tmux select-pane -t :.2
+tmux send-keys "pi" C-m

@@ -7,6 +7,7 @@ vim.opt.clipboard = "unnamedplus"
 vim.opt.winborder = "bold"
 vim.opt.ignorecase = true
 vim.opt.smartcase = true
+vim.opt.signcolumn = "yes:1"
 
 -- FOLDING
 vim.opt.foldmethod = "expr"
@@ -178,16 +179,30 @@ vim.api.nvim_set_decoration_provider(folded_ns, {
 		end)
 	end,
 })
+
+
 vim.opt.undodir = vim.fn.stdpath("data") .. "/undo"
 vim.opt.undofile = true
+
+-- Local plugin: ztk.nvim
+vim.opt.runtimepath:prepend("/home/himanshu/personal/projects/ztk")
+
 require('vim._core.ui2').enable()
 
 vim.g.mapleader = " "
-vim.cmd.colorscheme("catppuccin")
+
 
 vim.pack.add({
+	"https://github.com/iamcco/markdown-preview.nvim",
+	"https://github.com/lewis6991/gitsigns.nvim",
+	"https://github.com/supermaven-inc/supermaven-nvim",
 	"https://github.com/echasnovski/mini.ai",
 	"https://github.com/echasnovski/mini.pairs",
+	"https://github.com/sainnhe/everforest",
+	"https://github.com/nvim-lua/plenary.nvim",
+	"https://github.com/esmuellert/codediff.nvim",
+	"https://github.com/CopilotC-Nvim/CopilotChat.nvim",
+	"https://github.com/smnatale/coderabbit.nvim",
 	"https://github.com/williamboman/mason.nvim",
 	"https://github.com/neovim/nvim-lspconfig",
 	"https://github.com/stevearc/oil.nvim",
@@ -201,6 +216,8 @@ vim.pack.add({
 	"https://github.com/cachebag/jumpy.nvim",
 	"https://github.com/fxn/vim-monochrome",
 	"https://github.com/stevearc/quicker.nvim",
+	"https://github.com/ldelossa/gh.nvim",
+	"https://github.com/ldelossa/litee.nvim",
 	"https://github.com/michaelb/sniprun"
 })
 
@@ -208,11 +225,11 @@ require("sniprun").setup({
 	binary_path = "/usr/sbin/sniprun",
 	-- Language-specific interpreters
 	selected_interpreters = {
-		'Python3_fifo',  -- Python with FIFO-based REPL (no klepto dependency)
-		'Go_original',   -- Go
-		'C_original',    -- C
-		'Cpp_original',  -- C++
-		'Lua_nvim',      -- Lua (with Neovim integration)
+		'Python3_fifo', -- Python with FIFO-based REPL (no klepto dependency)
+		'Go_original', -- Go
+		'C_original', -- C
+		'Cpp_original', -- C++
+		'Lua_nvim', -- Lua (with Neovim integration)
 	},
 	-- Enable REPL mode for languages that support it
 	repl_enable = { 'Python3_fifo', 'Lua_nvim' },
@@ -231,15 +248,21 @@ vim.api.nvim_set_keymap('v', '<leader>r', '<Plug>SnipRun', { silent = true })
 -- Additional sniprun mappings for REPL and terminal control
 vim.api.nvim_set_keymap('n', '<leader>rr', ':SnipReplMemoryClean<CR>', { silent = true, desc = 'Clear REPL memory' })
 vim.api.nvim_set_keymap('n', '<leader>rt', ':SnipClose<CR>', { silent = true, desc = 'Close sniprun terminal' })
+
+vim.cmd.colorscheme("everforest")
 require("mason").setup()
+require("coderabbit").setup()
 require("oil").setup()
 require("mini.ai").setup()
+require("CopilotChat").setup()
 require("mini.pairs").setup()
-
-require("fzf-lua").setup({ "ivy" })
 require("nvim-highlight-colors").setup()
 require("img-clip").setup()
 require("quicker").setup()
+
+-- require("markdown-preview").setup()
+require("litee.lib").setup()
+require("litee.gh").setup()
 
 require("fzf-lua").setup({
 	"borderless-full",
@@ -249,10 +272,13 @@ require("fzf-lua").setup({
 		},
 	},
 })
+
+require("fzf-lua").register_ui_select()
+
 require("blink.cmp").setup({
 	keymap = { preset = "default" },
 	appearance = {
-		use_nvim_cmp_as_default = true,
+		-- use_nvim_cmp_as_default = true,
 		nerd_font_variant = "mono",
 	},
 	sources = {
@@ -260,6 +286,13 @@ require("blink.cmp").setup({
 	},
 })
 
+require("supermaven-nvim").setup({
+	keymaps = {
+		accept_suggestion = "<Tab>",
+		clear_suggestion = "<C-]>",
+		accept_word = "<C-j>",
+	},
+})
 require("nvim-treesitter").setup({
 	ensure_installed = {
 		"lua",
@@ -273,6 +306,7 @@ require("nvim-treesitter").setup({
 		"vim",
 		"vimdoc",
 		"go",
+		"json"
 	},
 
 	highlight = {
@@ -284,7 +318,8 @@ require("nvim-treesitter").setup({
 	},
 })
 
-vim.lsp.enable({ "basedpyright", "gopls", "lua_ls", "ts_ls" })
+
+vim.lsp.enable({ "basedpyright", "gopls", "lua_ls", "ts_ls", "emmet_ls", "tinymist", "rustfmt" })
 
 vim.api.nvim_create_autocmd("TextYankPost", {
 	callback = function()
@@ -292,11 +327,19 @@ vim.api.nvim_create_autocmd("TextYankPost", {
 	end,
 })
 
+vim.keymap.set("n", "<leader>p", ":PasteImage<CR>")
 vim.keymap.set("n", "<Esc>", ":nohl<CR>")
 vim.keymap.set("n", "<leader>q", ":bd<CR>")
 vim.keymap.set("n", "<leader>fg", ":FzfLua live_grep<CR>")
-vim.keymap.set("n", "<leader>ff", function() require("fzf-lua").files() end)
-vim.keymap.set("n", "<leader><leader>", function() require("fzf-lua").buffers() end)
+-- vim.keymap.set("n", "<leader>fg",
+-- 	function()
+-- 		require("telescope.builtin").live_grep(require('telescope.themes').get_ivy({}))
+-- 	end)
+vim.keymap.set("n", "<leader>ff", ":FzfLua files<CR>")
+-- vim.keymap.set("n", "<leader>ff",
+-- 	function() require("telescope.builtin").find_files(require('telescope.themes').get_ivy({})) end)
+vim.keymap.set("n", "<leader><leader>", ":FzfLua buffers<CR>")
+
 vim.keymap.set("n", "<leader>ft", ":Oil<CR>")
 vim.keymap.set("v", "K", ":m '<-2<CR>gv=gv")
 vim.keymap.set("v", "J", ":m '>+1<CR>gv=gv")
@@ -350,45 +393,61 @@ vim.keymap.set("n", "<leader>gs", "<cmd>Git<CR>")
 vim.keymap.set("n", "<leader>z", function()
 	local dirs = vim.fn.systemlist("zoxide query -l")
 
-	vim.ui.input({
+	require("fzf-lua").fzf_exec(dirs, {
 		prompt = "Zoxide> ",
-	}, function(input)
-		if not input or input == "" then
-			return
-		end
-
-		local matches = vim.fn.matchfuzzy(dirs, input)
-
-		if #matches == 0 then
-			print("No match")
-			return
-		end
-
-		require("oil").open(matches[1])
-	end)
+		actions = {
+			["default"] = function(selected)
+				if selected and selected[1] then
+					require("oil").open(selected[1])
+				end
+			end,
+		},
+	})
 end)
 
 vim.keymap.set("n", "<leader>Z", function()
-	vim.ui.input({
+	local dirs = vim.fn.systemlist("zoxide query -l")
+
+	require("fzf-lua").fzf_exec(dirs, {
 		prompt = "Zoxide cd> ",
-	}, function(input)
-		if not input or input == "" then
-			return
-		end
-
-		local dir = vim.fn.system(
-			"zoxide query " .. vim.fn.shellescape(input)
-		):gsub("\n", "")
-
-		if dir == "" then
-			print("No match")
-			return
-		end
-
-		vim.cmd.cd(vim.fn.fnameescape(dir))
-
-		require("oil").open(dir)
-	end)
+		actions = {
+			["default"] = function(selected)
+				if selected and selected[1] then
+					vim.cmd.cd(vim.fn.fnameescape(selected[1]))
+					require("oil").open(selected[1])
+				end
+			end,
+		},
+	})
 end)
 
 require("ai_chat").setup()
+require("gitsigns").setup()
+
+-- require("jumpy").setup(
+-- 	{
+-- 		provider = "openrouter",
+-- 	}
+-- )
+
+vim.keymap.set("n", "<leader>ds", ":FzfLua lsp_document_symbols<CR>")
+
+local function copy_buffer_path()
+	local bufnr = vim.api.nvim_get_current_buf()
+	local path = vim.api.nvim_buf_get_name(bufnr)
+	vim.fn.setreg('+', path)
+	print("Copied buffer path: " .. path)
+end
+
+vim.keymap.set('n', '<leader>cp', copy_buffer_path, { desc = 'Copy buffer path to clipboard' })
+vim.keymap.set('n', '<leader>mp', ":MarkdownPreview<CR>")
+vim.keymap.set('n', '<leader>gb', ":Git blame<CR>")
+
+vim.api.nvim_create_autocmd("User", {
+	pattern = "PackChanged",
+	callback = function(args)
+		if args.data.spec.name == "markdown-preview.nvim" then
+			vim.fn["mkdp#util#install"]()
+		end
+	end,
+})
