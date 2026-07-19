@@ -31,6 +31,7 @@ ShellRoot {
     function todo(): void { box.switchMode("todo") }
     function youtube(): void { box.switchMode("youtube") }
     function osd(type: string): void { box.showOsd(type) }
+    function bookmarks(): void { box.switchMode("bookmarks") }
   }
 
   // ---------- window ----------
@@ -53,13 +54,16 @@ ShellRoot {
       anchors.horizontalCenter: parent.horizontalCenter
       clip: true
 
-      property string mode: "time"  // "time" | "launcher" | "todo" | "youtube"
+      property string mode: "time"  // "time" | "launcher" | "todo" | "youtube" | "bookmarks"
       property var allApps: DesktopEntries.applications
       property bool ytSearching: false
       property bool ytSearched: false
       property string osdType: ""     // "volume" | "brightness"
       property real osdValue: 0        // 0.0 – 1.0
       property bool osdVisible: false
+      property bool bmLoaded: false
+      property bool bmSearching: false
+      property string bmRawData: ""
 
       readonly property bool isOpen: box.mode !== "time"
 
@@ -790,6 +794,203 @@ ShellRoot {
         }
       }
 
+      // ========== BOOKMARKS ==========
+      Item {
+        anchors.fill: parent
+        anchors.margins: 12
+        visible: box.mode === "bookmarks"
+        opacity: box.mode === "bookmarks" ? 1 : 0
+        Behavior on opacity { NumberAnimation { duration: 150 } }
+
+        FileView {
+          id: bookmarksFile
+          path: Quickshell.env("HOME") + "/dotfiles/scripts/bookmarks.csv"
+          watchChanges: true
+          onFileChanged: reload()
+          onLoaded: {
+            box.bmRawData = text()
+            box.parseBookmarksCsv(text())
+            box.bmLoaded = true
+          }
+        }
+
+        ColumnLayout {
+          anchors.fill: parent
+          spacing: 10
+
+          TextField {
+            id: bmInput
+            Layout.fillWidth: true
+            Layout.preferredHeight: 40
+            placeholderText: "Search bookmarks…"
+            placeholderTextColor: "#7a8478"
+            color: "#d3c6aa"
+            font.pixelSize: 13
+            leftPadding: 14
+            rightPadding: 14
+            topPadding: 10
+            bottomPadding: 10
+            selectByMouse: true
+
+            background: Rectangle {
+              radius: 4
+              color: "#323d43"
+              border.color: bmInput.activeFocus ? "#4f5b62" : "#3d484e"
+              border.width: 1
+            }
+
+            Keys.onPressed: function(event) {
+              if (event.key === Qt.Key_Escape) {
+                box.closeMode()
+              } else if (event.key === Qt.Key_Return || event.key === Qt.Key_Enter) {
+                if (bookmarkModel.count > 0) {
+                  var item = bookmarkModel.get(bookmarkList.currentIndex)
+                  if (item && item.url) box.openBookmark(item.url)
+                }
+              } else if (event.key === Qt.Key_Down ||
+                         (event.key === Qt.Key_N && event.modifiers & Qt.ControlModifier)) {
+                bookmarkList.incrementCurrentIndex()
+                bookmarkList.positionViewAtIndex(bookmarkList.currentIndex, ListView.Contain)
+                event.accepted = true
+              } else if (event.key === Qt.Key_Up ||
+                         (event.key === Qt.Key_P && event.modifiers & Qt.ControlModifier)) {
+                bookmarkList.decrementCurrentIndex()
+                bookmarkList.positionViewAtIndex(bookmarkList.currentIndex, ListView.Contain)
+                event.accepted = true
+              }
+            }
+
+            onTextChanged: box.filterBookmarks(text)
+          }
+
+          // Header
+          RowLayout {
+            Layout.fillWidth: true
+            Layout.preferredHeight: 16
+            spacing: 6
+
+            Text {
+              text: "BOOKMARKS (" + bookmarkModel.count + ")"
+              color: "#7a8478"
+              font.pixelSize: 10
+              font.bold: true
+              font.letterSpacing: 2
+              visible: !box.bmSearching
+            }
+
+            Item { Layout.fillWidth: true }
+          }
+
+          ListView {
+            id: bookmarkList
+            Layout.fillWidth: true
+            Layout.fillHeight: true
+            clip: true
+            currentIndex: 0
+            boundsBehavior: Flickable.StopAtBounds
+            model: ListModel { id: bookmarkModel }
+            spacing: 2
+            highlightMoveDuration: 0
+            highlightResizeDuration: 0
+            visible: bookmarkModel.count > 0
+
+            ScrollBar.vertical: ScrollBar {
+              policy: ScrollBar.AsNeeded
+              width: 4
+              background: Rectangle { color: "transparent" }
+              contentItem: Rectangle {
+                color: "#3d484e"
+                radius: 2
+              }
+            }
+
+            delegate: Item {
+              id: bmDelegate
+              width: bookmarkList.width
+              height: 44
+
+              required property string name
+              required property string url
+
+              Rectangle {
+                anchors.fill: parent
+                radius: 4
+                color: bmDelegate.ListView.isCurrentItem ? "#323d43" : "transparent"
+                border.color: bmDelegate.ListView.isCurrentItem ? "#3d484e" : "transparent"
+                border.width: 1
+              }
+
+              RowLayout {
+                anchors.fill: parent
+                anchors.margins: 6
+                spacing: 12
+
+                // Link icon
+                Text {
+                  Layout.preferredWidth: 24
+                  Layout.alignment: Qt.AlignVCenter
+                  text: "\u2197"
+                  color: "#7fbbb3"
+                  font.pixelSize: 16
+                  font.bold: true
+                }
+
+                Column {
+                  Layout.fillWidth: true
+                  Layout.alignment: Qt.AlignVCenter
+                  spacing: 2
+
+                  Text {
+                    text: name
+                    color: "#d3c6aa"
+                    font.pixelSize: 13
+                    font.weight: Font.DemiBold
+                    elide: Text.ElideRight
+                    width: parent.width
+                  }
+
+                  Text {
+                    text: url
+                    color: "#7a8478"
+                    font.pixelSize: 10
+                    elide: Text.ElideRight
+                    width: parent.width
+                    maximumLineCount: 1
+                  }
+                }
+              }
+
+              MouseArea {
+                anchors.fill: parent
+                hoverEnabled: true
+                onClicked: {
+                  bookmarkList.currentIndex = index
+                  if (url) box.openBookmark(url)
+                }
+              }
+            }
+          }
+
+          // Empty state
+          Item {
+            Layout.fillWidth: true
+            Layout.fillHeight: true
+            visible: bookmarkModel.count === 0
+
+            Text {
+              anchors.centerIn: parent
+              text: box.bmSearching ? "" :
+                     (bookmarkModel.count === 0 ?
+                      (!box.bmLoaded ? "Loading bookmarks…" :
+                       (bmInput.text.trim() !== "" ? "No matching bookmarks" :
+                        "No bookmarks found")) : "")
+              color: "#7a8478"
+              font.pixelSize: 13
+            }
+          }
+        }
+      }
+
       // ========== methods ==========
       function populateApps(text) {
         appListModel.clear()
@@ -866,6 +1067,13 @@ ShellRoot {
               ytInput.forceActiveFocus()
               ytInput.focus = true
             })
+          } else if (box.mode === "bookmarks") {
+            bmInput.text = ""
+            box.filterBookmarks("")
+            Qt.callLater(function() {
+              bmInput.forceActiveFocus()
+              bmInput.focus = true
+            })
           }
         }
       }
@@ -882,6 +1090,7 @@ ShellRoot {
           ytInput.focus = false
           ytSearching = false
           ytSearched = false
+          bmInput.focus = false
           osdVisible = false
         }
       }
@@ -898,6 +1107,54 @@ ShellRoot {
         }
 
         osdHideTimer.restart()
+      }
+
+      function loadBookmarks() {
+        // Data already loaded by FileView; just refilter with empty text
+        filterBookmarks("")
+      }
+
+      function parseBookmarksCsv(data) {
+        bookmarkModel.clear()
+        var lines = data.split("\n")
+        for (var i = 0; i < lines.length; i++) {
+          var line = lines[i].trim()
+          if (line === "" || line === "name,url") continue
+          var comma = line.indexOf(",")
+          if (comma > 0) {
+            var name = line.substring(0, comma).trim()
+            var url = line.substring(comma + 1).trim()
+            if (name && url) {
+              bookmarkModel.append({ name: name, url: url })
+            }
+          }
+        }
+        bmLoaded = true
+        if (bookmarkModel.count > 0) bookmarkList.currentIndex = 0
+      }
+
+      function filterBookmarks(text) {
+        bookmarkModel.clear()
+        var lower = text.toLowerCase()
+        var lines = bmRawData.split("\n")
+        for (var i = 0; i < lines.length; i++) {
+          var line = lines[i].trim()
+          if (line === "" || line === "name,url") continue
+          var comma = line.indexOf(",")
+          if (comma > 0) {
+            var name = line.substring(0, comma).trim()
+            var url = line.substring(comma + 1).trim()
+            if (name && url && (text === "" || name.toLowerCase().includes(lower))) {
+              bookmarkModel.append({ name: name, url: url })
+            }
+          }
+        }
+        if (bookmarkModel.count > 0) bookmarkList.currentIndex = 0
+      }
+
+      function openBookmark(url) {
+        Quickshell.execDetached(["xdg-open", url])
+        closeMode()
       }
     }
 
