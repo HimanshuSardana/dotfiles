@@ -63,7 +63,8 @@ ShellRoot {
 
       readonly property bool isOpen: box.mode !== "time"
 
-      implicitWidth: isOpen ? Math.min(540, window.width - 24) : timeRow.implicitWidth + 56
+      implicitWidth: isOpen ? Math.min(540, window.width - 24) :
+                     (osdVisible ? 220 : timeRow.implicitWidth + 56)
       implicitHeight: isOpen ? 500 : 40
 
       radius: 4
@@ -101,33 +102,48 @@ ShellRoot {
         spacing: 10
         visible: box.mode === "time" && box.osdVisible
 
+        // Icon
         Text {
-          text: box.osdType === "volume" ? "\uD83D\uDD0A" : "\u2600"
-          color: "#d3c6aa"
-          font.pixelSize: 16
+          text: box.osdType === "volume" ? "\u266B" : "\u2600"
+          color: box.osdType === "volume" ? "#83c092" : "#dbbc7f"
+          font.pixelSize: 18
+          font.bold: true
         }
 
+        // Label
+        Text {
+          text: box.osdType === "volume" ? "VOL" : "BRI"
+          color: "#7a8478"
+          font.pixelSize: 10
+          font.bold: true
+          font.letterSpacing: 2
+        }
+
+        // Progress bar track
         Rectangle {
-          width: 120
+          width: 100
           height: 6
           radius: 3
           color: "#3d484e"
 
+          // Progress bar fill
           Rectangle {
             height: parent.height
             width: parent.width * box.osdValue
             radius: 3
-            color: "#a7c080"
+            color: box.osdType === "volume" ? "#83c092" : "#dbbc7f"
 
-            Behavior on width { NumberAnimation { duration: 100 } }
+            Behavior on width { NumberAnimation { duration: 80 } }
           }
         }
 
+        // Percentage text
         Text {
           text: Math.round(box.osdValue * 100) + "%"
-          color: "#7a8478"
+          color: "#d3c6aa"
           font.pixelSize: 12
           font.family: "monospace"
+          font.bold: true
         }
       }
 
