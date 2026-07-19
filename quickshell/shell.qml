@@ -29,6 +29,7 @@ ShellRoot {
     function open(): void { box.openMode("launcher") }
     function close(): void { box.closeMode() }
     function todo(): void { box.switchMode("todo") }
+    function youtube(): void { box.switchMode("youtube") }
   }
 
   // ---------- window ----------
@@ -51,8 +52,9 @@ ShellRoot {
       anchors.horizontalCenter: parent.horizontalCenter
       clip: true
 
-      property string mode: "time"  // "time" | "launcher" | "todo"
+      property string mode: "time"  // "time" | "launcher" | "todo" | "youtube"
       property var allApps: DesktopEntries.applications
+      property bool ytSearching: false
 
       readonly property bool isOpen: box.mode !== "time"
 
@@ -492,6 +494,281 @@ ShellRoot {
         }
       }
 
+      // ========== YOUTUBE SEARCH ==========
+      Item {
+        anchors.fill: parent
+        anchors.margins: 12
+        visible: box.mode === "youtube"
+        opacity: box.mode === "youtube" ? 1 : 0
+        Behavior on opacity { NumberAnimation { duration: 150 } }
+
+        ColumnLayout {
+          anchors.fill: parent
+          spacing: 10
+
+          // Process for yt-dlp search
+          Process {
+            id: ytProcess
+            running: false
+
+            stdout: SplitParser {
+              splitMarker: "\n"
+              onRead: function(data) {
+                var line = data.trim()
+                if (line === "") return
+                var tabPos = line.indexOf("\t")
+                if (tabPos >= 0) {
+                  var title = line.substring(0, tabPos)
+                  var id = line.substring(tabPos + 1)
+                  youtubeResultsModel.append({ title: title, id: id })
+                }
+              }
+            }
+
+            onExited: function(exitCode, exitStatus) {
+              ytSearching = false
+              if (youtubeResultsModel.count > 0) {
+                youtubeList.currentIndex = 0
+                youtubeList.forceActiveFocus()
+              }
+            }
+          }
+
+          TextField {
+            id: ytInput
+            Layout.fillWidth: true
+            Layout.preferredHeight: 40
+            placeholderText: box.ytSearching ? "Searching YouTube…" : "Search YouTube…"
+            placeholderTextColor: "#7a8478"
+            color: "#d3c6aa"
+            font.pixelSize: 13
+            leftPadding: 14
+            rightPadding: 14
+            topPadding: 10
+            bottomPadding: 10
+            selectByMouse: true
+
+            background: Rectangle {
+              radius: 4
+              color: "#323d43"
+              border.color: ytInput.activeFocus ? "#4f5b62" : "#3d484e"
+              border.width: 1
+            }
+
+            Keys.onPressed: function(event) {
+              if (event.key === Qt.Key_Escape) {
+                box.closeMode()
+              } else if (event.key === Qt.Key_Return || event.key === Qt.Key_Enter) {
+                if (youtubeResultsModel.count > 0 && !box.ytSearching) {
+                  // Play selected result
+                  var item = youtubeResultsModel.get(youtubeList.currentIndex)
+                  if (item && item.id) {
+                    var url = "https://youtube.com/watch?v=" + item.id
+                    Qt.execDetached(["mpv", url, "--ytdl-format=best"])
+                    box.closeMode()
+                  }
+                } else {
+                  // Start search
+                  var query = ytInput.text.trim()
+                  if (query !== "") {
+                    doYoutubeSearch(query)
+                  }
+                }
+              } else if (event.key === Qt.Key_Down ||
+                         (event.key === Qt.Key_N && event.modifiers & Qt.ControlModifier)) {
+                if (youtubeResultsModel.count > 0) {
+                  youtubeList.incrementCurrentIndex()
+                  youtubeList.positionViewAtIndex(youtubeList.currentIndex, ListView.Contain)
+                  event.accepted = true
+                }
+              } else if (event.key === Qt.Key_Up ||
+                         (event.key === Qt.Key_P && event.modifiers & Qt.ControlModifier)) {
+                if (youtubeResultsModel.count > 0) {
+                  youtubeList.decrementCurrentIndex()
+                  youtubeList.positionViewAtIndex(youtubeList.currentIndex, ListView.Contain)
+                  event.accepted = true
+                }
+              }
+            }
+          }
+
+          // Results header
+          RowLayout {
+            Layout.fillWidth: true
+            spacing: 6
+            visible: youtubeResultsModel.count > 0 && !box.ytSearching
+
+            Text {
+              text: "YOUTUBE"
+              color: "#d3c6aa"
+              font.pixelSize: 11
+              font.bold: true
+              font.letterSpacing: 2
+            }
+
+            Text {
+              text: "(" + youtubeResultsModel.count + ")"
+              color: "#7a8478"
+              font.pixelSize: 11
+            }
+
+            Item { Layout.fillWidth: true }
+
+            Text {
+              text: "Enter to play"
+              color: "#56635f"
+              font.pixelSize: 10
+            }
+          }
+
+          // Loading indicator
+          Item {
+            Layout.fillWidth: true
+            Layout.preferredHeight: 40
+            visible: box.ytSearching
+
+            RowLayout {
+              Layout.alignment: Qt.AlignCenter
+              spacing: 8
+
+              Rectangle {
+                Layout.preferredWidth: 16
+                Layout.preferredHeight: 16
+                radius: 8
+                color: "#a7c080"
+                opacity: 0.6
+              }
+
+              Text {
+                text: "Searching…"
+                color: "#7a8478"
+                font.pixelSize: 12
+              }
+            }
+          }
+
+          ListView {
+            id: youtubeList
+            Layout.fillWidth: true
+            Layout.fillHeight: true
+            clip: true
+            currentIndex: 0
+            boundsBehavior: Flickable.StopAtBounds
+            model: ListModel { id: youtubeResultsModel }
+            spacing: 2
+            highlightMoveDuration: 0
+            highlightResizeDuration: 0
+            visible: youtubeResultsModel.count > 0 && !box.ytSearching
+
+            ScrollBar.vertical: ScrollBar {
+              policy: ScrollBar.AsNeeded
+              width: 4
+              background: Rectangle { color: "transparent" }
+              contentItem: Rectangle {
+                color: "#3d484e"
+                radius: 2
+              }
+            }
+
+            delegate: Item {
+              id: ytDelegate
+              width: youtubeList.width
+              height: 44
+
+              Rectangle {
+                anchors.fill: parent
+                radius: 4
+                color: ytDelegate.ListView.isCurrentItem ? "#323d43" : "transparent"
+                border.color: ytDelegate.ListView.isCurrentItem ? "#3d484e" : "transparent"
+                border.width: 1
+              }
+
+              RowLayout {
+                anchors.fill: parent
+                anchors.margins: 6
+                spacing: 10
+
+                // Number badge
+                Rectangle {
+                  Layout.preferredWidth: 24
+                  Layout.preferredHeight: 24
+                  Layout.alignment: Qt.AlignVCenter
+                  radius: 3
+                  color: "#475258"
+
+                  Text {
+                    anchors.centerIn: parent
+                    text: (index + 1)
+                    color: "#d3c6aa"
+                    font.pixelSize: 11
+                    font.bold: true
+                  }
+                }
+
+                Column {
+                  Layout.fillWidth: true
+                  Layout.alignment: Qt.AlignVCenter
+                  spacing: 2
+
+                  Text {
+                    text: title
+                    color: "#d3c6aa"
+                    font.pixelSize: 13
+                    font.weight: Font.DemiBold
+                    elide: Text.ElideRight
+                    width: parent.width
+                    maximumLineCount: 1
+                  }
+
+                  Text {
+                    text: "youtu.be/" + id
+                    color: "#7a8478"
+                    font.pixelSize: 10
+                    elide: Text.ElideRight
+                    width: parent.width
+                  }
+                }
+
+                // Play icon
+                Text {
+                  Layout.preferredWidth: 20
+                  Layout.alignment: Qt.AlignVCenter
+                  text: "\u25B6"
+                  color: "#56635f"
+                  font.pixelSize: 12
+                }
+              }
+
+              MouseArea {
+                anchors.fill: parent
+                hoverEnabled: true
+                onClicked: {
+                  youtubeList.currentIndex = index
+                  var item = youtubeResultsModel.get(index)
+                  if (item && item.id) {
+                    var url = "https://youtube.com/watch?v=" + item.id
+                    Qt.execDetached(["mpv", url, "--ytdl-format=best"])
+                    box.closeMode()
+                  }
+                }
+              }
+            }
+          }
+
+          // Empty / idle state
+          Text {
+            Layout.alignment: Qt.AlignCenter
+            text: box.ytSearching ? "" :
+                   (youtubeResultsModel.count === 0 ? (ytInput.text.trim() === "" ?
+                    "Search YouTube  \u2014  type a query and press Enter" :
+                    "No results found") : "")
+            color: "#7a8478"
+            font.pixelSize: 13
+            visible: youtubeResultsModel.count === 0 && !box.ytSearching
+          }
+        }
+      }
+
       // ========== methods ==========
       function populateApps(text) {
         appListModel.clear()
@@ -512,6 +789,14 @@ ShellRoot {
           }
         }
         if (appListModel.count > 0) appList.currentIndex = 0
+      }
+
+      function doYoutubeSearch(query) {
+        youtubeResultsModel.clear()
+        ytSearching = true
+        ytProcess.exec(["yt-dlp", "--flat-playlist",
+          "ytsearch20:" + query,
+          "--print", "%(title)s\t%(id)s"])
       }
 
       function filterTodos(filterText) {
@@ -550,6 +835,14 @@ ShellRoot {
               todoInput.forceActiveFocus()
               todoInput.focus = true
             })
+          } else if (box.mode === "youtube") {
+            ytInput.text = ""
+            youtubeResultsModel.clear()
+            ytSearching = false
+            Qt.callLater(function() {
+              ytInput.forceActiveFocus()
+              ytInput.focus = true
+            })
           }
         }
       }
@@ -563,6 +856,8 @@ ShellRoot {
           box.mode = "time"
           searchField.focus = false
           todoInput.focus = false
+          ytInput.focus = false
+          ytSearching = false
         }
       }
     }
