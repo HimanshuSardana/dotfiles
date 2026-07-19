@@ -503,7 +503,6 @@ ShellRoot {
         opacity: box.mode === "youtube" ? 1 : 0
         Behavior on opacity { NumberAnimation { duration: 150 } }
 
-        // Process for yt-dlp search
         Process {
           id: ytProcess
           running: false
@@ -527,21 +526,22 @@ ShellRoot {
             box.ytSearching = false
             if (youtubeResults.count > 0) {
               youtubeList.currentIndex = 0
-              youtubeList.forceActiveFocus()
+              // Keep focus on the search field so keyboard nav still works
             }
           }
         }
 
         ColumnLayout {
           anchors.fill: parent
-          spacing: 10
+          spacing: 8
 
-          // Search field
           TextField {
             id: ytInput
             Layout.fillWidth: true
             Layout.preferredHeight: 40
-            placeholderText: box.ytSearching ? "Searching YouTube…" : "Search YouTube…"
+            placeholderText: box.ytSearching ? "Searching YouTube…" : (
+                               youtubeResults.count > 0 ? "Type to refine or press Enter to play" :
+                               "Search YouTube…")
             placeholderTextColor: "#7a8478"
             color: "#d3c6aa"
             font.pixelSize: 13
@@ -563,19 +563,15 @@ ShellRoot {
                 box.closeMode()
               } else if (event.key === Qt.Key_Return || event.key === Qt.Key_Enter) {
                 if (youtubeResults.count > 0 && !box.ytSearching) {
-                  // Play selected result
                   var item = youtubeResults.get(youtubeList.currentIndex)
                   if (item && item.id) {
-                    var url = "https://youtube.com/watch?v=" + item.id
-                    Qt.execDetached(["mpv", url, "--ytdl-format=best"])
+                    Quickshell.execDetached(["mpv", "https://youtube.com/watch?v=" + item.id,
+                                     "--ytdl-format=best"])
                     box.closeMode()
                   }
                 } else {
-                  // Start search
                   var query = ytInput.text.trim()
-                  if (query !== "") {
-                    box.doYoutubeSearch(query)
-                  }
+                  if (query !== "") box.doYoutubeSearch(query)
                 }
               } else if (event.key === Qt.Key_Down ||
                          (event.key === Qt.Key_N && event.modifiers & Qt.ControlModifier)) {
@@ -595,49 +591,24 @@ ShellRoot {
             }
           }
 
-          // Smaller header / loading row
+          // Result count (always present, fixed height)
           RowLayout {
             Layout.fillWidth: true
+            Layout.preferredHeight: 16
             spacing: 6
-            Layout.preferredHeight: 20
 
-            // Left: YOUTUBE header when results
             Text {
-              text: "YOUTUBE"
-              color: "#d3c6aa"
-              font.pixelSize: 11
+              text: youtubeResults.count > 0 ? "YOUTUBE (" + youtubeResults.count + ")" : ""
+              color: "#7a8478"
+              font.pixelSize: 10
               font.bold: true
               font.letterSpacing: 2
-              visible: youtubeResults.count > 0 && !box.ytSearching
-            }
-
-            Text {
-              text: "(" + youtubeResults.count + ")"
-              color: "#7a8478"
-              font.pixelSize: 11
-              visible: youtubeResults.count > 0 && !box.ytSearching
-            }
-
-            // Center: loading when searching
-            Text {
-              text: "Searching…"
-              color: "#7a8478"
-              font.pixelSize: 12
-              visible: box.ytSearching
+              visible: !box.ytSearching
             }
 
             Item { Layout.fillWidth: true }
-
-            // Right: hint
-            Text {
-              text: "Enter to play"
-              color: "#56635f"
-              font.pixelSize: 10
-              visible: youtubeResults.count > 0 && !box.ytSearching
-            }
           }
 
-          // Results list
           ListView {
             id: youtubeList
             Layout.fillWidth: true
@@ -649,7 +620,7 @@ ShellRoot {
             spacing: 2
             highlightMoveDuration: 0
             highlightResizeDuration: 0
-            visible: youtubeResults.count > 0 && !box.ytSearching
+            visible: youtubeResults.count > 0
 
             ScrollBar.vertical: ScrollBar {
               policy: ScrollBar.AsNeeded
@@ -735,8 +706,8 @@ ShellRoot {
                   youtubeList.currentIndex = index
                   var item = youtubeResults.get(index)
                   if (item && item.id) {
-                    var url = "https://youtube.com/watch?v=" + item.id
-                    Qt.execDetached(["mpv", url, "--ytdl-format=best"])
+                    Quickshell.execDetached(["mpv", "https://youtube.com/watch?v=" + item.id,
+                                     "--ytdl-format=best"])
                     box.closeMode()
                   }
                 }
@@ -744,20 +715,21 @@ ShellRoot {
             }
           }
 
-          // Empty / idle state — sits inside the ListView area
-          // (shown when no results, positioned naturally in the layout flow)
-          Text {
+          // Empty/idle state overlaid on the ListView area
+          // (always present to prevent layout shifts)
+          Item {
             Layout.fillWidth: true
             Layout.fillHeight: true
-            verticalAlignment: Text.AlignVCenter
-            horizontalAlignment: Text.AlignHCenter
-            text: box.ytSearching ? "" :
-                   (youtubeResults.count === 0 ?
-                    (!box.ytSearched ? "Search YouTube  \u2014  type a query and press Enter" :
-                                      "No results found") : "")
-            color: "#7a8478"
-            font.pixelSize: 13
-            visible: youtubeResults.count === 0 && !box.ytSearching
+            visible: youtubeResults.count === 0
+
+            Text {
+              anchors.centerIn: parent
+              text: box.ytSearching ? "Searching…" :
+                     (!box.ytSearched ? "Search YouTube  \u2014  type a query and press Enter" :
+                      "No results found")
+              color: "#7a8478"
+              font.pixelSize: 13
+            }
           }
         }
       }
