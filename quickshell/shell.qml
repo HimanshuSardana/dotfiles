@@ -55,6 +55,7 @@ ShellRoot {
       property string mode: "time"  // "time" | "launcher" | "todo" | "youtube"
       property var allApps: DesktopEntries.applications
       property bool ytSearching: false
+      property bool ytSearched: false
 
       readonly property bool isOpen: box.mode !== "time"
 
@@ -526,6 +527,7 @@ ShellRoot {
             }
 
             onExited: function(exitCode, exitStatus) {
+              ytSearched = true
               ytSearching = false
               if (youtubeResultsModel.count > 0) {
                 youtubeList.currentIndex = 0
@@ -759,9 +761,9 @@ ShellRoot {
           Text {
             Layout.alignment: Qt.AlignCenter
             text: box.ytSearching ? "" :
-                   (youtubeResultsModel.count === 0 ? (ytInput.text.trim() === "" ?
-                    "Search YouTube  \u2014  type a query and press Enter" :
-                    "No results found") : "")
+                   (youtubeResultsModel.count === 0 ?
+                    (!box.ytSearched ? "Search YouTube  \u2014  type a query and press Enter" :
+                                      "No results found") : "")
             color: "#7a8478"
             font.pixelSize: 13
             visible: youtubeResultsModel.count === 0 && !box.ytSearching
@@ -794,6 +796,7 @@ ShellRoot {
       function doYoutubeSearch(query) {
         youtubeResultsModel.clear()
         ytSearching = true
+        ytSearched = false
         ytProcess.exec(["yt-dlp", "--flat-playlist",
           "ytsearch20:" + query,
           "--print", "%(title)s\t%(id)s"])
@@ -839,6 +842,7 @@ ShellRoot {
             ytInput.text = ""
             youtubeResultsModel.clear()
             ytSearching = false
+            ytSearched = false
             Qt.callLater(function() {
               ytInput.forceActiveFocus()
               ytInput.focus = true
@@ -858,6 +862,7 @@ ShellRoot {
           todoInput.focus = false
           ytInput.focus = false
           ytSearching = false
+          ytSearched = false
         }
       }
     }

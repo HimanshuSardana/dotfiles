@@ -195,7 +195,7 @@ vim.g.mapleader = " "
 vim.pack.add({
 	"https://github.com/iamcco/markdown-preview.nvim",
 	"https://github.com/lewis6991/gitsigns.nvim",
-	"https://github.com/supermaven-inc/supermaven-nvim",
+	-- "https://github.com/supermaven-inc/supermaven-nvim",
 	"https://github.com/echasnovski/mini.ai",
 	"https://github.com/echasnovski/mini.pairs",
 	"https://github.com/sainnhe/everforest",
@@ -286,13 +286,13 @@ require("blink.cmp").setup({
 	},
 })
 
-require("supermaven-nvim").setup({
-	keymaps = {
-		accept_suggestion = "<Tab>",
-		clear_suggestion = "<C-]>",
-		accept_word = "<C-j>",
-	},
-})
+-- require("supermaven-nvim").setup({
+-- 	keymaps = {
+-- 		accept_suggestion = "<Tab>",
+-- 		clear_suggestion = "<C-]>",
+-- 		accept_word = "<C-j>",
+-- 	},
+-- })
 require("nvim-treesitter").setup({
 	ensure_installed = {
 		"lua",

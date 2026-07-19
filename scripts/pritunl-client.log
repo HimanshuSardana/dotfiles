@@ -1,0 +1,174 @@
+[2026-07-03 22:30:16][ERRO] ▶ iface: Failed to sync profiles
+auth: Failed to auth key
+open /var/run/pritunl.auth: no such file or directory
+ORIGINAL STACK TRACE:
+github.com/pritunl/pritunl-client/cli/service.GetAuthKey
+	/go/src/github.com/pritunl/pritunl-client/cli/service/utils.go:44 +0x7012ad
+github.com/pritunl/pritunl-client/cli/sprofile.GetAll
+	/go/src/github.com/pritunl/pritunl-client/cli/sprofile/utils.go:227 +0x766b36
+github.com/pritunl/pritunl-client/cli/iface.(*Model).Sync
+	/go/src/github.com/pritunl/pritunl-client/cli/iface/model.go:384 +0x8039e9
+github.com/pritunl/pritunl-client/cli/iface.Model.Update
+	/go/src/github.com/pritunl/pritunl-client/cli/iface/model.go:263 +0x801884
+github.com/charmbracelet/bubbletea.(*Program).eventLoop
+	/go/pkg/mod/github.com/charmbracelet/bubbletea@v1.3.5/tea.go:525 +0x7d488d
+github.com/charmbracelet/bubbletea.(*Program).Run
+	/go/pkg/mod/github.com/charmbracelet/bubbletea@v1.3.5/tea.go:679 +0x7d59c6
+github.com/pritunl/pritunl-client/cli/iface.Iface
+	/go/src/github.com/pritunl/pritunl-client/cli/iface/iface.go:53 +0x7fffb1
+github.com/pritunl/pritunl-client/cli/cmd.init.func6
+	/go/src/github.com/pritunl/pritunl-client/cli/cmd/root.go:13 +0x819052
+github.com/spf13/cobra.(*Command).execute
+	/go/pkg/mod/github.com/spf13/cobra@v1.8.1/command.go:989 +0x756ada
+github.com/spf13/cobra.(*Command).ExecuteC
+	/go/pkg/mod/github.com/spf13/cobra@v1.8.1/command.go:1117 +0x75740e
+github.com/spf13/cobra.(*Command).Execute
+	/go/pkg/mod/github.com/spf13/cobra@v1.8.1/command.go:1041 +0x81a039
+github.com/pritunl/pritunl-client/cli/cmd.Execute
+	/go/src/github.com/pritunl/pritunl-client/cli/cmd/root.go:19 +0x81a02e
+main.main
+	/go/src/github.com/pritunl/pritunl-client/cli/main.go:8 +0x81a62e
+runtime.main
+	/usr/lib/go/src/runtime/proc.go:290 +0x454e14
+runtime.goexit
+	/usr/lib/go/src/runtime/asm_amd64.s:1771 +0x491820
+[2026-07-03 22:30:18][INFO] ▶ iface: Import
+[2026-07-03 22:30:19][ERRO] ▶ iface: Failed to sync profiles
+auth: Failed to auth key
+open /var/run/pritunl.auth: no such file or directory
+ORIGINAL STACK TRACE:
+github.com/pritunl/pritunl-client/cli/service.GetAuthKey
+	/go/src/github.com/pritunl/pritunl-client/cli/service/utils.go:44 +0x7012ad
+github.com/pritunl/pritunl-client/cli/sprofile.GetAll
+	/go/src/github.com/pritunl/pritunl-client/cli/sprofile/utils.go:227 +0x766b36
+github.com/pritunl/pritunl-client/cli/iface.(*Model).Sync
+	/go/src/github.com/pritunl/pritunl-client/cli/iface/model.go:384 +0x8039e9
+github.com/pritunl/pritunl-client/cli/iface.Model.Update
+	/go/src/github.com/pritunl/pritunl-client/cli/iface/model.go:263 +0x801884
+github.com/charmbracelet/bubbletea.(*Program).eventLoop
+	/go/pkg/mod/github.com/charmbracelet/bubbletea@v1.3.5/tea.go:525 +0x7d488d
+github.com/charmbracelet/bubbletea.(*Program).Run
+	/go/pkg/mod/github.com/charmbracelet/bubbletea@v1.3.5/tea.go:679 +0x7d59c6
+github.com/pritunl/pritunl-client/cli/iface.Iface
+	/go/src/github.com/pritunl/pritunl-client/cli/iface/iface.go:53 +0x7fffb1
+github.com/pritunl/pritunl-client/cli/cmd.init.func6
+	/go/src/github.com/pritunl/pritunl-client/cli/cmd/root.go:13 +0x819052
+github.com/spf13/cobra.(*Command).execute
+	/go/pkg/mod/github.com/spf13/cobra@v1.8.1/command.go:989 +0x756ada
+github.com/spf13/cobra.(*Command).ExecuteC
+	/go/pkg/mod/github.com/spf13/cobra@v1.8.1/command.go:1117 +0x75740e
+github.com/spf13/cobra.(*Command).Execute
+	/go/pkg/mod/github.com/spf13/cobra@v1.8.1/command.go:1041 +0x81a039
+github.com/pritunl/pritunl-client/cli/cmd.Execute
+	/go/src/github.com/pritunl/pritunl-client/cli/cmd/root.go:19 +0x81a02e
+main.main
+	/go/src/github.com/pritunl/pritunl-client/cli/main.go:8 +0x81a62e
+runtime.main
+	/usr/lib/go/src/runtime/proc.go:290 +0x454e14
+runtime.goexit
+	/usr/lib/go/src/runtime/asm_amd64.s:1771 +0x491820
+[2026-07-03 22:30:19][INFO] ▶ iface: Import
+[2026-07-03 22:30:20][INFO] ▶ iface: Import
+[2026-07-03 22:30:20][INFO] ▶ iface: Import
+[2026-07-03 22:30:20][ERRO] ▶ iface: Failed to sync profiles
+auth: Failed to auth key
+open /var/run/pritunl.auth: no such file or directory
+ORIGINAL STACK TRACE:
+github.com/pritunl/pritunl-client/cli/service.GetAuthKey
+	/go/src/github.com/pritunl/pritunl-client/cli/service/utils.go:44 +0x7012ad
+github.com/pritunl/pritunl-client/cli/sprofile.GetAll
+	/go/src/github.com/pritunl/pritunl-client/cli/sprofile/utils.go:227 +0x766b36
+github.com/pritunl/pritunl-client/cli/iface.(*Model).Sync
+	/go/src/github.com/pritunl/pritunl-client/cli/iface/model.go:384 +0x8039e9
+github.com/pritunl/pritunl-client/cli/iface.Model.Update
+	/go/src/github.com/pritunl/pritunl-client/cli/iface/model.go:263 +0x801884
+github.com/charmbracelet/bubbletea.(*Program).eventLoop
+	/go/pkg/mod/github.com/charmbracelet/bubbletea@v1.3.5/tea.go:525 +0x7d488d
+github.com/charmbracelet/bubbletea.(*Program).Run
+	/go/pkg/mod/github.com/charmbracelet/bubbletea@v1.3.5/tea.go:679 +0x7d59c6
+github.com/pritunl/pritunl-client/cli/iface.Iface
+	/go/src/github.com/pritunl/pritunl-client/cli/iface/iface.go:53 +0x7fffb1
+github.com/pritunl/pritunl-client/cli/cmd.init.func6
+	/go/src/github.com/pritunl/pritunl-client/cli/cmd/root.go:13 +0x819052
+github.com/spf13/cobra.(*Command).execute
+	/go/pkg/mod/github.com/spf13/cobra@v1.8.1/command.go:989 +0x756ada
+github.com/spf13/cobra.(*Command).ExecuteC
+	/go/pkg/mod/github.com/spf13/cobra@v1.8.1/command.go:1117 +0x75740e
+github.com/spf13/cobra.(*Command).Execute
+	/go/pkg/mod/github.com/spf13/cobra@v1.8.1/command.go:1041 +0x81a039
+github.com/pritunl/pritunl-client/cli/cmd.Execute
+	/go/src/github.com/pritunl/pritunl-client/cli/cmd/root.go:19 +0x81a02e
+main.main
+	/go/src/github.com/pritunl/pritunl-client/cli/main.go:8 +0x81a62e
+runtime.main
+	/usr/lib/go/src/runtime/proc.go:290 +0x454e14
+runtime.goexit
+	/usr/lib/go/src/runtime/asm_amd64.s:1771 +0x491820
+[2026-07-03 22:33:21][ERRO] ▶ iface: Failed to sync profiles
+auth: Failed to auth key
+open /var/run/pritunl.auth: no such file or directory
+ORIGINAL STACK TRACE:
+github.com/pritunl/pritunl-client/cli/service.GetAuthKey
+	/go/src/github.com/pritunl/pritunl-client/cli/service/utils.go:44 +0x7012ad
+github.com/pritunl/pritunl-client/cli/sprofile.GetAll
+	/go/src/github.com/pritunl/pritunl-client/cli/sprofile/utils.go:227 +0x766b36
+github.com/pritunl/pritunl-client/cli/iface.(*Model).Sync
+	/go/src/github.com/pritunl/pritunl-client/cli/iface/model.go:384 +0x8039e9
+github.com/pritunl/pritunl-client/cli/iface.Model.Update
+	/go/src/github.com/pritunl/pritunl-client/cli/iface/model.go:263 +0x801884
+github.com/charmbracelet/bubbletea.(*Program).eventLoop
+	/go/pkg/mod/github.com/charmbracelet/bubbletea@v1.3.5/tea.go:525 +0x7d488d
+github.com/charmbracelet/bubbletea.(*Program).Run
+	/go/pkg/mod/github.com/charmbracelet/bubbletea@v1.3.5/tea.go:679 +0x7d59c6
+github.com/pritunl/pritunl-client/cli/iface.Iface
+	/go/src/github.com/pritunl/pritunl-client/cli/iface/iface.go:53 +0x7fffb1
+github.com/pritunl/pritunl-client/cli/cmd.init.func6
+	/go/src/github.com/pritunl/pritunl-client/cli/cmd/root.go:13 +0x819052
+github.com/spf13/cobra.(*Command).execute
+	/go/pkg/mod/github.com/spf13/cobra@v1.8.1/command.go:989 +0x756ada
+github.com/spf13/cobra.(*Command).ExecuteC
+	/go/pkg/mod/github.com/spf13/cobra@v1.8.1/command.go:1117 +0x75740e
+github.com/spf13/cobra.(*Command).Execute
+	/go/pkg/mod/github.com/spf13/cobra@v1.8.1/command.go:1041 +0x81a039
+github.com/pritunl/pritunl-client/cli/cmd.Execute
+	/go/src/github.com/pritunl/pritunl-client/cli/cmd/root.go:19 +0x81a02e
+main.main
+	/go/src/github.com/pritunl/pritunl-client/cli/main.go:8 +0x81a62e
+runtime.main
+	/usr/lib/go/src/runtime/proc.go:290 +0x454e14
+runtime.goexit
+	/usr/lib/go/src/runtime/asm_amd64.s:1771 +0x491820
+[2026-07-03 22:33:22][ERRO] ▶ iface: Failed to sync profiles
+auth: Failed to auth key
+open /var/run/pritunl.auth: no such file or directory
+ORIGINAL STACK TRACE:
+github.com/pritunl/pritunl-client/cli/service.GetAuthKey
+	/go/src/github.com/pritunl/pritunl-client/cli/service/utils.go:44 +0x7012ad
+github.com/pritunl/pritunl-client/cli/sprofile.GetAll
+	/go/src/github.com/pritunl/pritunl-client/cli/sprofile/utils.go:227 +0x766b36
+github.com/pritunl/pritunl-client/cli/iface.(*Model).Sync
+	/go/src/github.com/pritunl/pritunl-client/cli/iface/model.go:384 +0x8039e9
+github.com/pritunl/pritunl-client/cli/iface.Model.Update
+	/go/src/github.com/pritunl/pritunl-client/cli/iface/model.go:263 +0x801884
+github.com/charmbracelet/bubbletea.(*Program).eventLoop
+	/go/pkg/mod/github.com/charmbracelet/bubbletea@v1.3.5/tea.go:525 +0x7d488d
+github.com/charmbracelet/bubbletea.(*Program).Run
+	/go/pkg/mod/github.com/charmbracelet/bubbletea@v1.3.5/tea.go:679 +0x7d59c6
+github.com/pritunl/pritunl-client/cli/iface.Iface
+	/go/src/github.com/pritunl/pritunl-client/cli/iface/iface.go:53 +0x7fffb1
+github.com/pritunl/pritunl-client/cli/cmd.init.func6
+	/go/src/github.com/pritunl/pritunl-client/cli/cmd/root.go:13 +0x819052
+github.com/spf13/cobra.(*Command).execute
+	/go/pkg/mod/github.com/spf13/cobra@v1.8.1/command.go:989 +0x756ada
+github.com/spf13/cobra.(*Command).ExecuteC
+	/go/pkg/mod/github.com/spf13/cobra@v1.8.1/command.go:1117 +0x75740e
+github.com/spf13/cobra.(*Command).Execute
+	/go/pkg/mod/github.com/spf13/cobra@v1.8.1/command.go:1041 +0x81a039
+github.com/pritunl/pritunl-client/cli/cmd.Execute
+	/go/src/github.com/pritunl/pritunl-client/cli/cmd/root.go:19 +0x81a02e
+main.main
+	/go/src/github.com/pritunl/pritunl-client/cli/main.go:8 +0x81a62e
+runtime.main
+	/usr/lib/go/src/runtime/proc.go:290 +0x454e14
+runtime.goexit
+	/usr/lib/go/src/runtime/asm_amd64.s:1771 +0x491820
