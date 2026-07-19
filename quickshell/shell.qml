@@ -503,38 +503,38 @@ ShellRoot {
         opacity: box.mode === "youtube" ? 1 : 0
         Behavior on opacity { NumberAnimation { duration: 150 } }
 
-        ColumnLayout {
-          anchors.fill: parent
-          spacing: 10
+        // Process for yt-dlp search
+        Process {
+          id: ytProcess
+          running: false
 
-          // Process for yt-dlp search
-          Process {
-            id: ytProcess
-            running: false
-
-            stdout: SplitParser {
-              splitMarker: "\n"
-              onRead: function(data) {
-                var line = data.trim()
-                if (line === "") return
-                var tabPos = line.indexOf("\t")
-                if (tabPos >= 0) {
-                  var title = line.substring(0, tabPos)
-                  var id = line.substring(tabPos + 1)
-                  youtubeResultsModel.append({ title: title, id: id })
-                }
-              }
-            }
-
-            onExited: function(exitCode, exitStatus) {
-              ytSearched = true
-              ytSearching = false
-              if (youtubeResultsModel.count > 0) {
-                youtubeList.currentIndex = 0
-                youtubeList.forceActiveFocus()
+          stdout: SplitParser {
+            splitMarker: "\n"
+            onRead: function(data) {
+              var line = data.trim()
+              if (line === "") return
+              var tabPos = line.indexOf("\t")
+              if (tabPos >= 0) {
+                var title = line.substring(0, tabPos)
+                var id = line.substring(tabPos + 1)
+                youtubeResultsModel.append({ title: title, id: id })
               }
             }
           }
+
+          onExited: function(exitCode, exitStatus) {
+            box.ytSearched = true
+            box.ytSearching = false
+            if (youtubeResultsModel.count > 0) {
+              youtubeList.currentIndex = 0
+              youtubeList.forceActiveFocus()
+            }
+          }
+        }
+
+        ColumnLayout {
+          anchors.fill: parent
+          spacing: 10
 
           TextField {
             id: ytInput
@@ -573,7 +573,7 @@ ShellRoot {
                   // Start search
                   var query = ytInput.text.trim()
                   if (query !== "") {
-                    doYoutubeSearch(query)
+                    box.doYoutubeSearch(query)
                   }
                 }
               } else if (event.key === Qt.Key_Down ||
