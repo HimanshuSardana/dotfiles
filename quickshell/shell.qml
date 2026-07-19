@@ -30,6 +30,7 @@ ShellRoot {
     function close(): void { box.closeMode() }
     function todo(): void { box.switchMode("todo") }
     function youtube(): void { box.switchMode("youtube") }
+    function osd(type: string): void { box.showOsd(type) }
   }
 
   // ---------- window ----------
@@ -56,6 +57,9 @@ ShellRoot {
       property var allApps: DesktopEntries.applications
       property bool ytSearching: false
       property bool ytSearched: false
+      property string osdType: ""     // "volume" | "brightness"
+      property real osdValue: 0        // 0.0 – 1.0
+      property bool osdVisible: false
 
       readonly property bool isOpen: box.mode !== "time"
 
@@ -77,7 +81,7 @@ ShellRoot {
         id: timeRow
         anchors.centerIn: parent
         spacing: 8
-        visible: box.mode === "time"
+        visible: box.mode === "time" && !box.osdVisible
 
         Text {
           id: timeLabel
@@ -88,6 +92,42 @@ ShellRoot {
           font.bold: true
           horizontalAlignment: Text.AlignHCenter
           Layout.alignment: Qt.AlignCenter
+        }
+      }
+
+      // ========== OSD OVERLAY ==========
+      RowLayout {
+        anchors.centerIn: parent
+        spacing: 10
+        visible: box.mode === "time" && box.osdVisible
+
+        Text {
+          text: box.osdType === "volume" ? "\uD83D\uDD0A" : "\u2600"
+          color: "#d3c6aa"
+          font.pixelSize: 16
+        }
+
+        Rectangle {
+          width: 120
+          height: 6
+          radius: 3
+          color: "#3d484e"
+
+          Rectangle {
+            height: parent.height
+            width: parent.width * box.osdValue
+            radius: 3
+            color: "#a7c080"
+
+            Behavior on width { NumberAnimation { duration: 100 } }
+          }
+        }
+
+        Text {
+          text: Math.round(box.osdValue * 100) + "%"
+          color: "#7a8478"
+          font.pixelSize: 12
+          font.family: "monospace"
         }
       }
 
@@ -826,7 +866,62 @@ ShellRoot {
           ytInput.focus = false
           ytSearching = false
           ytSearched = false
+          osdVisible = false
         }
+      }
+
+      function showOsd(type) {
+        osdType = type
+        osdVisible = true
+
+        if (type === "volume") {
+          osdVolumeReader.exec(["wpctl", "get-volume", "@DEFAULT_AUDIO_SINK@"])
+        } else if (type === "brightness") {
+          osdBrightnessReader.exec(["bash", "-c",
+            "echo \"$(brightnessctl get) $(brightnessctl max)\""])
+        }
+
+        osdHideTimer.restart()
+      }
+    }
+
+    // ---- OSD helpers ----
+    Process {
+      id: osdVolumeReader
+      running: false
+
+      stdout: SplitParser {
+        splitMarker: "\n"
+        onRead: function(data) {
+          var match = data.match(/Volume: ([\d.]+)/)
+          if (match) box.osdValue = parseFloat(match[1])
+        }
+      }
+    }
+
+    Process {
+      id: osdBrightnessReader
+      running: false
+
+      stdout: SplitParser {
+        splitMarker: "\n"
+        onRead: function(data) {
+          var parts = data.trim().split(" ")
+          if (parts.length === 2) {
+            var cur = parseFloat(parts[0])
+            var max = parseFloat(parts[1])
+            if (max > 0) box.osdValue = cur / max
+          }
+        }
+      }
+    }
+
+    Timer {
+      id: osdHideTimer
+      interval: 1500
+      repeat: false
+      onTriggered: {
+        box.osdVisible = false
       }
     }
   }
